@@ -15,8 +15,8 @@ namespace League\CommonMark\Tests\Unit\Extension\FrontMatter\Data;
 
 use League\CommonMark\Extension\FrontMatter\Data\SymfonyYamlFrontMatterParser;
 use League\CommonMark\Extension\FrontMatter\Exception\InvalidFrontMatterException;
-use PHPUnit\Framework\TestCase;
 use PackageVersions\Versions as InstalledComposerPackages;
+use PHPUnit\Framework\TestCase;
 
 final class SymfonyYamlFrontMatterParserTest extends TestCase
 {

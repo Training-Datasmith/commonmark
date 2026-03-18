@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace League\CommonMark\Tests\PHPStan;
 
+use PhpParser\Node;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
-use PhpParser\Node;
 
 /**
  * Custom phpstan rule that:

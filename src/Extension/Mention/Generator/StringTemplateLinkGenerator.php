@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace League\CommonMark\Extension\Mention\Generator;
 
 use League\CommonMark\Extension\Mention\Mention;
-use League\CommonMark\Node\Inline\AbstractInline;
 
 final class StringTemplateLinkGenerator implements MentionGeneratorInterface
 {

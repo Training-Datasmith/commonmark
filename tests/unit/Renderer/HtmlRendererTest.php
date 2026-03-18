@@ -10,8 +10,8 @@ use League\CommonMark\Node\Block\Document;
 use League\CommonMark\Node\Block\Paragraph;
 use League\CommonMark\Node\Inline\Text;
 use League\CommonMark\Renderer\HtmlRenderer;
-use League\CommonMark\Renderer\NoMatchingRendererException;
 use League\CommonMark\Renderer\NodeRendererInterface;
+use League\CommonMark\Renderer\NoMatchingRendererException;
 use PHPUnit\Framework\TestCase;
 
 final class HtmlRendererTest extends TestCase

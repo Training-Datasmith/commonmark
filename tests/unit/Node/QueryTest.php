@@ -131,7 +131,7 @@ final class QueryTest extends TestCase
 
     public function testWhereUsingExpressionInterface(): void
     {
-        $query = (new Query())->where(new class implements Query\ExpressionInterface {
+        $query = (new Query())->where(new class () implements Query\ExpressionInterface {
             public function __invoke(Node $node): bool
             {
                 return $node->data->get('number') % 2 === 0;
@@ -143,21 +143,21 @@ final class QueryTest extends TestCase
 
     public function testWhereClausesUsingExpressionInterface(): void
     {
-        $hasEvenNumber = new class implements Query\ExpressionInterface {
+        $hasEvenNumber = new class () implements Query\ExpressionInterface {
             public function __invoke(Node $node): bool
             {
                 return $node->data->get('number') % 2 === 0;
             }
         };
 
-        $greaterThanThree = new class implements Query\ExpressionInterface {
+        $greaterThanThree = new class () implements Query\ExpressionInterface {
             public function __invoke(Node $node): bool
             {
                 return $node->data->get('number') > 3;
             }
         };
 
-        $isNumberFive = new class implements Query\ExpressionInterface {
+        $isNumberFive = new class () implements Query\ExpressionInterface {
             public function __invoke(Node $node): bool
             {
                 return $node->data->get('number') === 5;
@@ -183,7 +183,7 @@ final class QueryTest extends TestCase
         $query = (new Query())
             ->where(Query::hasChild())
             ->orWhere(
-                new class implements Query\ExpressionInterface {
+                new class () implements Query\ExpressionInterface {
                     public function __invoke(Node $node): bool
                     {
                         return $node->data->get('number') % 2 === 0;

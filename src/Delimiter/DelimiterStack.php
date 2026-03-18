@@ -39,7 +39,6 @@ final class DelimiterStack
      */
     private $missingIndexCache;
 
-
     private int $remainingDelimiters = 0;
 
     public function __construct(int $maximumStackSize = PHP_INT_MAX)

@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the league/commonmark package.
  *
@@ -86,16 +88,16 @@ while ($key = array_shift($argv)) {
                 } else {
                     $config[$key] = array_shift($argv);
                 }
-            break;
+                break;
 
             default:
-               $key = substr($key, 1);
+                $key = substr($key, 1);
 
-               if (!isset($config['flags'][$key])) {
-                   $usage($config, 'invalid flag %s', $key);
-               }
+                if (!isset($config['flags'][$key])) {
+                    $usage($config, 'invalid flag %s', $key);
+                }
 
-               $config['flags'][$key] = true;
+                $config['flags'][$key] = true;
         } break;
 
         default: $usage($config, $key);
@@ -333,7 +335,7 @@ $run = function (array $config, string $parser) use ($exec): array {
             exit(1);
         }
 
-        return explode(" ", $result);
+        return explode(' ', $result);
     }
 
     return $exec($config, $parser);

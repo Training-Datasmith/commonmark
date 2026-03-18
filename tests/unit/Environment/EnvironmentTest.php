@@ -315,9 +315,11 @@ final class EnvironmentTest extends TestCase
         $environment = new Environment();
 
         // phpcs:ignore Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore
-        $listener1 = new FakeEventListener(static function (): void { });
+        $listener1 = new FakeEventListener(static function (): void {
+        });
         // phpcs:ignore Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore
-        $listener2 = new FakeEventListenerInvokable(static function (): void { });
+        $listener2 = new FakeEventListenerInvokable(static function (): void {
+        });
 
         $environment->addEventListener('', [$listener1, 'doStuff']);
         $environment->addEventListener('', $listener2);
