@@ -90,9 +90,7 @@ final class XmlRenderer implements DocumentRendererInterface
             $result .= ' /';
         }
 
-        $result .= '>';
-
-        return $result;
+        return $result . '>';
     }
 
     /**

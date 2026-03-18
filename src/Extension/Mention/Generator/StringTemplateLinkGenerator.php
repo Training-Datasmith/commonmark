@@ -25,7 +25,7 @@ final class StringTemplateLinkGenerator implements MentionGeneratorInterface
         $this->urlTemplate = $urlTemplate;
     }
 
-    public function generateMention(Mention $mention): ?AbstractInline
+    public function generateMention(Mention $mention): \League\CommonMark\Extension\Mention\Mention
     {
         $mention->setUrl(\sprintf($this->urlTemplate, $mention->getIdentifier()));
 

@@ -33,7 +33,7 @@ final class TableStartParser implements BlockStartParserInterface
     public function tryStart(Cursor $cursor, MarkdownParserStateInterface $parserState): ?BlockStart
     {
         $paragraph = $parserState->getParagraphContent();
-        if ($paragraph === null || \strpos($paragraph, '|') === false) {
+        if ($paragraph === null || !str_contains($paragraph, '|')) {
             return BlockStart::none();
         }
 

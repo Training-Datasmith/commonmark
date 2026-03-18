@@ -21,7 +21,7 @@ use League\CommonMark\Xml\XmlNodeRendererInterface;
 final class TableOfContentsRenderer implements NodeRendererInterface, XmlNodeRendererInterface
 {
     /** @var NodeRendererInterface&XmlNodeRendererInterface */
-    private $innerRenderer;
+    private \League\CommonMark\Renderer\NodeRendererInterface $innerRenderer;
 
     /**
      * @psalm-param NodeRendererInterface&XmlNodeRendererInterface $innerRenderer

@@ -93,8 +93,6 @@ final class BlockStart
 
     /**
      * Signal that we cannot parse whatever is here
-     *
-     * @return null
      */
     public static function none(): ?self
     {

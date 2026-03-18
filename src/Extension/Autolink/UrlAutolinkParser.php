@@ -118,14 +118,14 @@ final class UrlAutolinkParser implements InlineParserInterface
         }
 
         // Does the URL need unmatched parens chopped off?
-        if (\substr($url, -1) === ')' && ($diff = self::diffParens($url)) > 0) {
+        if (str_ends_with($url, ')') && ($diff = self::diffParens($url)) > 0) {
             $url = \substr($url, 0, -$diff);
         }
 
         $cursor->advanceBy(\mb_strlen($url, 'UTF-8'));
 
         // Auto-prefix 'http(s)://' onto 'www' URLs
-        if (\substr($url, 0, 4) === 'www.') {
+        if (str_starts_with($url, 'www.')) {
             $inlineContext->getContainer()->appendChild(new Link($this->defaultProtocol . '://' . $url, $url));
 
             return true;

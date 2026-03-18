@@ -38,7 +38,7 @@ final class HtmlDecorator implements NodeRendererInterface
     /**
      * {@inheritDoc}
      */
-    public function render(Node $node, ChildNodeRendererInterface $childRenderer)
+    public function render(Node $node, ChildNodeRendererInterface $childRenderer): \League\CommonMark\Util\HtmlElement
     {
         return new HtmlElement($this->tag, $this->attributes, $this->inner->render($node, $childRenderer), $this->selfClosing);
     }

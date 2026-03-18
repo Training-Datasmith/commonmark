@@ -81,9 +81,11 @@ final class TableOfContentsGenerator implements TableOfContentsGeneratorInterfac
             if (! $heading instanceof Heading) {
                 continue;
             }
-
             // Skip any headings outside the configured min/max levels
-            if ($heading->getLevel() < $this->minHeadingLevel || $heading->getLevel() > $this->maxHeadingLevel) {
+            if ($heading->getLevel() < $this->minHeadingLevel) {
+                continue;
+            }
+            if ($heading->getLevel() > $this->maxHeadingLevel) {
                 continue;
             }
 

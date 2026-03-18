@@ -41,7 +41,7 @@ final class AttributesBlockContinueParser extends AbstractBlockContinueParser
         $this->container = $container;
     }
 
-    public function getBlock(): AbstractBlock
+    public function getBlock(): \League\CommonMark\Extension\Attributes\Node\Attributes
     {
         return $this->block;
     }

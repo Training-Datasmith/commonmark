@@ -47,7 +47,7 @@ final class ListBlockParser extends AbstractBlockContinueParser
         return $childBlock instanceof ListItem;
     }
 
-    public function tryContinue(Cursor $cursor, BlockContinueParserInterface $activeBlockParser): ?BlockContinue
+    public function tryContinue(Cursor $cursor, BlockContinueParserInterface $activeBlockParser): \League\CommonMark\Parser\Block\BlockContinue
     {
         // List blocks themselves don't have any markers, only list items. So try to stay in the list.
         // If there is a block start other than list item, canContain makes sure that this list is closed.

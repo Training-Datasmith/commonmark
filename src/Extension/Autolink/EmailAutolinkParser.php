@@ -36,7 +36,7 @@ final class EmailAutolinkParser implements InlineParserInterface
         }
 
         // Does the URL end with punctuation that should be stripped?
-        if (\substr($email, -1) === '.') {
+        if (str_ends_with($email, '.')) {
             $email = \substr($email, 0, -1);
         }
 

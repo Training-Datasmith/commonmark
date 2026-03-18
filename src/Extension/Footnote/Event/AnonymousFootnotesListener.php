@@ -32,10 +32,12 @@ final class AnonymousFootnotesListener implements ConfigurationAwareInterface
     {
         $document = $event->getDocument();
         foreach ($document->iterator() as $node) {
-            if (! $node instanceof FootnoteRef || ($text = $node->getContent()) === null) {
+            if (! $node instanceof FootnoteRef) {
                 continue;
             }
-
+            if (($text = $node->getContent()) === null) {
+                continue;
+            }
             // Anonymous footnote needs to create a footnote from its content
             $existingReference = $node->getReference();
             $newReference      = new Reference(

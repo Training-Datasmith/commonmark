@@ -45,7 +45,7 @@ final class CallbackGenerator implements MentionGeneratorInterface
             return $result;
         }
 
-        if ($result instanceof Mention && $result->hasUrl()) {
+        if ($result->hasUrl()) {
             return $mention;
         }
 

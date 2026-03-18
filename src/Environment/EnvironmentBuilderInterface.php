@@ -40,7 +40,6 @@ interface EnvironmentBuilderInterface extends ConfigurationProviderInterface
      * @param BlockStartParserInterface $parser   Block parser instance
      * @param int                       $priority Priority (a higher number will be executed earlier)
      *
-     * @return $this
      *
      * @throws AlreadyInitializedException if the Environment has already been initialized
      */
@@ -52,7 +51,6 @@ interface EnvironmentBuilderInterface extends ConfigurationProviderInterface
      * @param InlineParserInterface $parser   Inline parser instance
      * @param int                   $priority Priority (a higher number will be executed earlier)
      *
-     * @return $this
      *
      * @throws AlreadyInitializedException if the Environment has already been initialized
      */
@@ -76,7 +74,6 @@ interface EnvironmentBuilderInterface extends ConfigurationProviderInterface
      *
      * @psalm-param class-string<Node> $nodeClass
      *
-     * @return $this
      *
      * @throws AlreadyInitializedException if the Environment has already been initialized
      */
@@ -89,7 +86,6 @@ interface EnvironmentBuilderInterface extends ConfigurationProviderInterface
      * @param callable     $listener   Listener to be executed
      * @param int          $priority   Priority (a higher number will be executed earlier)
      *
-     * @return $this
      *
      * @throws AlreadyInitializedException if the Environment has already been initialized
      */

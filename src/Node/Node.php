@@ -198,7 +198,7 @@ abstract class Node
     public function detachChildren(): void
     {
         foreach ($this->children() as $children) {
-            $children->setParent(null);
+            $children->setParent();
         }
 
         $this->firstChild = $this->lastChild = null;

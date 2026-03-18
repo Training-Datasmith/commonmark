@@ -40,7 +40,7 @@ final class FencedCodeParser extends AbstractBlockContinueParser
         return $this->block;
     }
 
-    public function tryContinue(Cursor $cursor, BlockContinueParserInterface $activeBlockParser): ?BlockContinue
+    public function tryContinue(Cursor $cursor, BlockContinueParserInterface $activeBlockParser): \League\CommonMark\Parser\Block\BlockContinue
     {
         // Check for closing code fence
         if (! $cursor->isIndented() && $cursor->getNextNonSpaceCharacter() === $this->block->getChar()) {

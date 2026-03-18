@@ -47,8 +47,6 @@ final class BlockContinue
 
     /**
      * Signal that we cannot continue here
-     *
-     * @return null
      */
     public static function none(): ?self
     {

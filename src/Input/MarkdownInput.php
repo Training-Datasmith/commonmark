@@ -40,7 +40,7 @@ class MarkdownInput implements MarkdownInputInterface
         }
 
         // Strip any leading UTF-8 BOM
-        if (\substr($content, 0, 3) === "\xEF\xBB\xBF") {
+        if (str_starts_with($content, "\xEF\xBB\xBF")) {
             $content = \substr($content, 3);
         }
 

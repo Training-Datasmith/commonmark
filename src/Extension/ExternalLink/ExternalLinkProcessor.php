@@ -105,7 +105,7 @@ final class ExternalLinkProcessor
     public static function hostMatches(string $host, $compareTo): bool
     {
         foreach ((array) $compareTo as $c) {
-            if (\strpos($c, '/') === 0) {
+            if (str_starts_with($c, '/')) {
                 if (\preg_match($c, $host)) {
                     return true;
                 }

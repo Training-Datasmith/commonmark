@@ -26,11 +26,11 @@ final class Html5EntityDecoder
      */
     public static function decode(string $entity): string
     {
-        if (\substr($entity, -1) !== ';') {
+        if (!str_ends_with($entity, ';')) {
             return $entity;
         }
 
-        if (\substr($entity, 0, 2) === '&#') {
+        if (str_starts_with($entity, '&#')) {
             if (\strtolower(\substr($entity, 2, 1)) === 'x') {
                 return self::fromHex(\substr($entity, 3, -1));
             }
@@ -46,7 +46,7 @@ final class Html5EntityDecoder
      *
      * @psalm-pure
      */
-    private static function fromDecimal($number): string
+    private static function fromDecimal(?string $number): string
     {
         // Only convert code points within planes 0-2, excluding NULL
         // phpcs:ignore Generic.PHP.ForbiddenFunctions.Found

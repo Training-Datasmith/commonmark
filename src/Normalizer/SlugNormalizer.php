@@ -48,7 +48,7 @@ final class SlugNormalizer implements TextNormalizerInterface, ConfigurationAwar
         $slug = \preg_replace('/[^\p{L}\p{Nd}\p{Nl}\p{M}-]+/u', '', $slug) ?? $slug;
         // Trim to requested length if given
         if ($length = $context['length'] ?? $this->defaultMaxLength) {
-            $slug = \mb_substr($slug, 0, $length, 'UTF-8');
+            return \mb_substr($slug, 0, $length, 'UTF-8');
         }
 
         // @phpstan-ignore-next-line Because it thinks mb_substr() returns false on PHP 7.4

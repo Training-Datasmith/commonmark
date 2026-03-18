@@ -86,7 +86,7 @@ final class RegexHelper
     public static function isWhitespace(string $character): bool
     {
         /** @psalm-suppress InvalidLiteralArgument */
-        return $character !== '' && \strpos(" \t\n\x0b\x0c\x0d", $character) !== false;
+        return $character !== '' && str_contains(" \t\n\x0b\x0c\x0d", $character);
     }
 
     /**
@@ -160,7 +160,7 @@ final class RegexHelper
         $escaped = \preg_replace($allEscapedChar, '$1', $string);
         \assert(\is_string($escaped));
 
-        return \preg_replace_callback('/' . self::PARTIAL_ENTITY . '/i', static fn ($e) => Html5EntityDecoder::decode($e[0]), $escaped);
+        return \preg_replace_callback('/' . self::PARTIAL_ENTITY . '/i', static fn ($e): string => Html5EntityDecoder::decode($e[0]), $escaped);
     }
 
     /**

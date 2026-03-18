@@ -38,7 +38,7 @@ final class DescriptionTermContinueParser extends AbstractBlockContinueParser im
         return $this->block;
     }
 
-    public function tryContinue(Cursor $cursor, BlockContinueParserInterface $activeBlockParser): ?BlockContinue
+    public function tryContinue(Cursor $cursor, BlockContinueParserInterface $activeBlockParser): \League\CommonMark\Parser\Block\BlockContinue
     {
         return BlockContinue::finished();
     }

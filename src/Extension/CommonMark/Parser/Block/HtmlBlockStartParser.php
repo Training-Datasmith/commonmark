@@ -41,7 +41,7 @@ final class HtmlBlockStartParser implements BlockStartParserInterface
                 $line
             );
 
-            if ($match !== null && ($blockType < 7 || $this->isType7BlockAllowed($cursor, $parserState))) {
+            if ($match !== null && ($blockType < 7 || $this->isType7BlockAllowed($parserState))) {
                 return BlockStart::of(new HtmlBlockParser($blockType))->at($cursor);
             }
         }
@@ -49,7 +49,7 @@ final class HtmlBlockStartParser implements BlockStartParserInterface
         return BlockStart::none();
     }
 
-    private function isType7BlockAllowed(Cursor $cursor, MarkdownParserStateInterface $parserState): bool
+    private function isType7BlockAllowed(MarkdownParserStateInterface $parserState): bool
     {
         // Type 7 blocks can't interrupt paragraphs
         if ($parserState->getLastMatchedBlockParser()->getBlock() instanceof Paragraph) {

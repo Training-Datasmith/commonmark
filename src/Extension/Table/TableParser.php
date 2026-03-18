@@ -90,7 +90,7 @@ final class TableParser extends AbstractBlockContinueParser implements BlockCont
 
     public function tryContinue(Cursor $cursor, BlockContinueParserInterface $activeBlockParser): ?BlockContinue
     {
-        if (\strpos($cursor->getLine(), '|') === false) {
+        if (!str_contains($cursor->getLine(), '|')) {
             return BlockContinue::none();
         }
 

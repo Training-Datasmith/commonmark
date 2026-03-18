@@ -47,7 +47,7 @@ final class DocumentBlockParser extends AbstractBlockContinueParser
         return true;
     }
 
-    public function tryContinue(Cursor $cursor, BlockContinueParserInterface $activeBlockParser): ?BlockContinue
+    public function tryContinue(Cursor $cursor, BlockContinueParserInterface $activeBlockParser): \League\CommonMark\Parser\Block\BlockContinue
     {
         return BlockContinue::at($cursor);
     }
