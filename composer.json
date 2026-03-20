@@ -2,7 +2,16 @@
     "name": "league/commonmark",
     "type": "library",
     "description": "Highly-extensible PHP Markdown parser which fully supports the CommonMark spec and GitHub-Flavored Markdown (GFM)",
-    "keywords": ["markdown","parser","commonmark","gfm","github","flavored","github-flavored","md"],
+    "keywords": [
+        "markdown",
+        "parser",
+        "commonmark",
+        "gfm",
+        "github",
+        "flavored",
+        "github-flavored",
+        "md"
+    ],
     "homepage": "https://commonmark.thephpleague.com",
     "license": "BSD-3-Clause",
     "authors": [
@@ -89,14 +98,14 @@
     ],
     "autoload": {
         "psr-4": {
-            "League\\CommonMark\\": "src"
+            "League\\Common_Mark\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "League\\CommonMark\\Tests\\Unit\\": "tests/unit",
-            "League\\CommonMark\\Tests\\Functional\\": "tests/functional",
-            "League\\CommonMark\\Tests\\PHPStan\\": "tests/phpstan"
+            "League\\Common_Mark\\Tests\\Unit\\": "tests/unit",
+            "League\\Common_Mark\\Tests\\Functional\\": "tests/functional",
+            "League\\Common_Mark\\Tests\\PHP_Stan\\": "tests/phpstan"
         }
     },
     "scripts": {
