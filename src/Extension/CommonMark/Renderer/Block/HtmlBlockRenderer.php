@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,23 +12,20 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Common_Mark\Renderer\Block;
 
-namespace League\CommonMark\Extension\CommonMark\Renderer\Block;
-
-use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
-use League\CommonMark\Node\Node;
-use League\CommonMark\Renderer\ChildNodeRendererInterface;
-use League\CommonMark\Renderer\NodeRendererInterface;
-use League\CommonMark\Util\HtmlFilter;
-use League\CommonMark\Xml\XmlNodeRendererInterface;
-use League\Config\ConfigurationAwareInterface;
-use League\Config\ConfigurationInterface;
-
-final class HtmlBlockRenderer implements NodeRendererInterface, XmlNodeRendererInterface, ConfigurationAwareInterface
+use League\Common_Mark\Extension\Common_Mark\Node\Block\Html_Block;
+use League\Common_Mark\Node\Node;
+use League\Common_Mark\Renderer\Child_Node_Renderer_Interface;
+use League\Common_Mark\Renderer\Node_Renderer_Interface;
+use League\Common_Mark\Util\Html_Filter;
+use League\Common_Mark\Xml\Xml_Node_Renderer_Interface;
+use League\Config\Configuration_Aware_Interface;
+use League\Config\Configuration_Interface;
+final class Html_Block_Renderer implements Node_Renderer_Interface, Xml_Node_Renderer_Interface, Configuration_Aware_Interface
 {
     /** @psalm-readonly-allow-private-mutation */
-    private ConfigurationInterface $config;
-
+    private Configuration_Interface $config;
     /**
      * @param HtmlBlock $node
      *
@@ -37,29 +33,24 @@ final class HtmlBlockRenderer implements NodeRendererInterface, XmlNodeRendererI
      *
      * @psalm-suppress MoreSpecificImplementedParamType
      */
-    public function render(Node $node, ChildNodeRendererInterface $childRenderer): string
+    public function render(Node $node, Child_Node_Renderer_Interface $child_renderer): string
     {
-        HtmlBlock::assertInstanceOf($node);
-
-        $htmlInput = $this->config->get('html_input');
-
-        return HtmlFilter::filter($node->getLiteral(), $htmlInput);
+        Html_Block::assert_instance_of($node);
+        $html_input = $this->config->get('html_input');
+        return Html_Filter::filter($node->get_literal(), $html_input);
     }
-
-    public function setConfiguration(ConfigurationInterface $configuration): void
+    public function set_configuration(Configuration_Interface $configuration): void
     {
         $this->config = $configuration;
     }
-
-    public function getXmlTagName(Node $node): string
+    public function get_xml_tag_name(Node $node): string
     {
         return 'html_block';
     }
-
     /**
      * {@inheritDoc}
      */
-    public function getXmlAttributes(Node $node): array
+    public function get_xml_attributes(Node $node): array
     {
         return [];
     }

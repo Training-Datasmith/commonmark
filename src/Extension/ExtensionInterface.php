@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,12 +12,10 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension;
 
-namespace League\CommonMark\Extension;
-
-use League\CommonMark\Environment\EnvironmentBuilderInterface;
-
-interface ExtensionInterface
+use League\Common_Mark\Environment\Environment_Builder_Interface;
+interface Extension_Interface
 {
-    public function register(EnvironmentBuilderInterface $environment): void;
+    public function register(Environment_Builder_Interface $environment): void;
 }

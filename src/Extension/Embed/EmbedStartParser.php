@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,44 +9,36 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Embed;
 
-namespace League\CommonMark\Extension\Embed;
-
-use League\CommonMark\Parser\Block\BlockStart;
-use League\CommonMark\Parser\Block\BlockStartParserInterface;
-use League\CommonMark\Parser\Cursor;
-use League\CommonMark\Parser\MarkdownParserStateInterface;
-use League\CommonMark\Util\LinkParserHelper;
-
-class EmbedStartParser implements BlockStartParserInterface
+use League\Common_Mark\Parser\Block\Block_Start;
+use League\Common_Mark\Parser\Block\Block_Start_Parser_Interface;
+use League\Common_Mark\Parser\Cursor;
+use League\Common_Mark\Parser\Markdown_Parser_State_Interface;
+use League\Common_Mark\Util\Link_Parser_Helper;
+class Embed_Start_Parser implements Block_Start_Parser_Interface
 {
-    public function tryStart(Cursor $cursor, MarkdownParserStateInterface $parserState): ?BlockStart
+    public function try_start(Cursor $cursor, Markdown_Parser_State_Interface $parser_state): ?Block_Start
     {
-        if ($cursor->isIndented() || $parserState->getParagraphContent() !== null || ! ($parserState->getActiveBlockParser()->isContainer())) {
-            return BlockStart::none();
+        if ($cursor->is_indented() || $parser_state->get_paragraph_content() !== null || !$parser_state->get_active_block_parser()->is_container()) {
+            return Block_Start::none();
         }
-
         // 0-3 leading spaces are okay
-        $cursor->advanceToNextNonSpaceOrTab();
-
+        $cursor->advance_to_next_non_space_or_tab();
         // The line must begin with "https://"
-        if (! str_starts_with($cursor->getRemainder(), 'https://')) {
-            return BlockStart::none();
+        if (!str_starts_with($cursor->get_remainder(), 'https://')) {
+            return Block_Start::none();
         }
-
         // A valid link must be found next
-        if (($dest = LinkParserHelper::parseLinkDestination($cursor)) === null) {
-            return BlockStart::none();
+        if (($dest = Link_Parser_Helper::parse_link_destination($cursor)) === null) {
+            return Block_Start::none();
         }
-
         // Skip any trailing whitespace
-        $cursor->advanceToNextNonSpaceOrTab();
-
+        $cursor->advance_to_next_non_space_or_tab();
         // We must be at the end of the line; otherwise, this link was not by itself
-        if (! $cursor->isAtEnd()) {
-            return BlockStart::none();
+        if (!$cursor->is_at_end()) {
+            return Block_Start::none();
         }
-
-        return BlockStart::of(new EmbedParser($dest))->at($cursor);
+        return Block_Start::of(new Embed_Parser($dest))->at($cursor);
     }
 }

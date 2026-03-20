@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,17 +9,15 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Strikethrough;
 
-namespace League\CommonMark\Extension\Strikethrough;
-
-use League\CommonMark\Environment\EnvironmentBuilderInterface;
-use League\CommonMark\Extension\ExtensionInterface;
-
-final class StrikethroughExtension implements ExtensionInterface
+use League\Common_Mark\Environment\Environment_Builder_Interface;
+use League\Common_Mark\Extension\Extension_Interface;
+final class Strikethrough_Extension implements Extension_Interface
 {
-    public function register(EnvironmentBuilderInterface $environment): void
+    public function register(Environment_Builder_Interface $environment): void
     {
-        $environment->addDelimiterProcessor(new StrikethroughDelimiterProcessor());
-        $environment->addRenderer(Strikethrough::class, new StrikethroughRenderer());
+        $environment->add_delimiter_processor(new Strikethrough_Delimiter_Processor());
+        $environment->add_renderer(Strikethrough::class, new Strikethrough_Renderer());
     }
 }

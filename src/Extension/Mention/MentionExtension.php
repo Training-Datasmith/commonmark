@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,51 +9,36 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Mention;
 
-namespace League\CommonMark\Extension\Mention;
-
-use League\CommonMark\Environment\EnvironmentBuilderInterface;
-use League\CommonMark\Extension\ConfigurableExtensionInterface;
-use League\CommonMark\Extension\Mention\Generator\MentionGeneratorInterface;
-use League\Config\ConfigurationBuilderInterface;
-use League\Config\Exception\InvalidConfigurationException;
+use League\Common_Mark\Environment\Environment_Builder_Interface;
+use League\Common_Mark\Extension\Configurable_Extension_Interface;
+use League\Common_Mark\Extension\Mention\Generator\Mention_Generator_Interface;
+use League\Config\Configuration_Builder_Interface;
+use League\Config\Exception\Invalid_Configuration_Exception;
 use Nette\Schema\Expect;
-
-final class MentionExtension implements ConfigurableExtensionInterface
+final class Mention_Extension implements Configurable_Extension_Interface
 {
-    public function configureSchema(ConfigurationBuilderInterface $builder): void
+    public function configure_schema(Configuration_Builder_Interface $builder): void
     {
-        $isAValidPartialRegex = static function (string $regex): bool {
+        $is_a_valid_partial_regex = static function (string $regex): bool {
             $regex = '/' . $regex . '/i';
-
             return @\preg_match($regex, '') !== false;
         };
-
-        $builder->addSchema('mentions', Expect::arrayOf(
-            Expect::structure([
-                'prefix' => Expect::string()->required(),
-                'pattern' => Expect::string()->assert($isAValidPartialRegex, 'Pattern must not include starting/ending delimiters (like "/")')->required(),
-                'generator' => Expect::anyOf(
-                    Expect::type(MentionGeneratorInterface::class),
-                    Expect::string(),
-                    Expect::type('callable')
-                )->required(),
-            ])
-        ));
+        $builder->add_schema('mentions', Expect::array_of(Expect::structure(['prefix' => Expect::string()->required(), 'pattern' => Expect::string()->assert($is_a_valid_partial_regex, 'Pattern must not include starting/ending delimiters (like "/")')->required(), 'generator' => Expect::any_of(Expect::type(Mention_Generator_Interface::class), Expect::string(), Expect::type('callable'))->required()])));
     }
-
-    public function register(EnvironmentBuilderInterface $environment): void
+    public function register(Environment_Builder_Interface $environment): void
     {
-        $mentions = $environment->getConfiguration()->get('mentions');
+        $mentions = $environment->get_configuration()->get('mentions');
         foreach ($mentions as $name => $mention) {
-            if ($mention['generator'] instanceof MentionGeneratorInterface) {
-                $environment->addInlineParser(new MentionParser($name, $mention['prefix'], $mention['pattern'], $mention['generator']));
+            if ($mention['generator'] instanceof Mention_Generator_Interface) {
+                $environment->add_inline_parser(new Mention_Parser($name, $mention['prefix'], $mention['pattern'], $mention['generator']));
             } elseif (\is_string($mention['generator'])) {
-                $environment->addInlineParser(MentionParser::createWithStringTemplate($name, $mention['prefix'], $mention['pattern'], $mention['generator']));
+                $environment->add_inline_parser(Mention_Parser::create_with_string_template($name, $mention['prefix'], $mention['pattern'], $mention['generator']));
             } elseif (\is_callable($mention['generator'])) {
-                $environment->addInlineParser(MentionParser::createWithCallback($name, $mention['prefix'], $mention['pattern'], $mention['generator']));
+                $environment->add_inline_parser(Mention_Parser::create_with_callback($name, $mention['prefix'], $mention['pattern'], $mention['generator']));
             } else {
-                throw new InvalidConfigurationException(\sprintf('The "generator" provided for the "%s" MentionParser configuration must be a string template, callable, or an object that implements %s.', $name, MentionGeneratorInterface::class));
+                throw new Invalid_Configuration_Exception(\sprintf('The "generator" provided for the "%s" MentionParser configuration must be a string template, callable, or an object that implements %s.', $name, Mention_Generator_Interface::class));
             }
         }
     }

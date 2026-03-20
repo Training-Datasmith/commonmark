@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,41 +9,33 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Embed;
 
-namespace League\CommonMark\Extension\Embed;
-
-use League\CommonMark\Node\Block\AbstractBlock;
-
-final class Embed extends AbstractBlock
+use League\Common_Mark\Node\Block\Abstract_Block;
+final class Embed extends Abstract_Block
 {
     private string $url;
-    private ?string $embedCode;
-
-    public function __construct(string $url, ?string $embedCode = null)
+    private ?string $embed_code;
+    public function __construct(string $url, ?string $embed_code = null)
     {
         parent::__construct();
-
-        $this->url       = $url;
-        $this->embedCode = $embedCode;
+        $this->url = $url;
+        $this->embed_code = $embed_code;
     }
-
-    public function getUrl(): string
+    public function get_url(): string
     {
         return $this->url;
     }
-
-    public function setUrl(string $url): void
+    public function set_url(string $url): void
     {
         $this->url = $url;
     }
-
-    public function getEmbedCode(): ?string
+    public function get_embed_code(): ?string
     {
-        return $this->embedCode;
+        return $this->embed_code;
     }
-
-    public function setEmbedCode(?string $embedCode): void
+    public function set_embed_code(?string $embed_code): void
     {
-        $this->embedCode = $embedCode;
+        $this->embed_code = $embed_code;
     }
 }

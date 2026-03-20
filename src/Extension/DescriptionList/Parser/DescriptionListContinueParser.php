@@ -8,46 +8,38 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace League\Common_Mark\Extension\Description_List\Parser;
 
-declare(strict_types=1);
-
-namespace League\CommonMark\Extension\DescriptionList\Parser;
-
-use League\CommonMark\Extension\DescriptionList\Node\Description;
-use League\CommonMark\Extension\DescriptionList\Node\DescriptionList;
-use League\CommonMark\Extension\DescriptionList\Node\DescriptionTerm;
-use League\CommonMark\Node\Block\AbstractBlock;
-use League\CommonMark\Parser\Block\AbstractBlockContinueParser;
-use League\CommonMark\Parser\Block\BlockContinue;
-use League\CommonMark\Parser\Block\BlockContinueParserInterface;
-use League\CommonMark\Parser\Cursor;
-
-final class DescriptionListContinueParser extends AbstractBlockContinueParser
+use League\Common_Mark\Extension\Description_List\Node\Description;
+use League\Common_Mark\Extension\Description_List\Node\Description_List;
+use League\Common_Mark\Extension\Description_List\Node\Description_Term;
+use League\Common_Mark\Node\Block\Abstract_Block;
+use League\Common_Mark\Parser\Block\Abstract_Block_Continue_Parser;
+use League\Common_Mark\Parser\Block\Block_Continue;
+use League\Common_Mark\Parser\Block\Block_Continue_Parser_Interface;
+use League\Common_Mark\Parser\Cursor;
+final class Description_List_Continue_Parser extends Abstract_Block_Continue_Parser
 {
-    private DescriptionList $block;
-
+    private Description_List $block;
     public function __construct()
     {
-        $this->block = new DescriptionList();
+        $this->block = new Description_List();
     }
-
-    public function getBlock(): DescriptionList
+    public function get_block(): Description_List
     {
         return $this->block;
     }
-
-    public function tryContinue(Cursor $cursor, BlockContinueParserInterface $activeBlockParser): \League\CommonMark\Parser\Block\BlockContinue
+    public function try_continue(Cursor $cursor, Block_Continue_Parser_Interface $active_block_parser): \League\Common_Mark\Parser\Block\Block_Continue
     {
-        return BlockContinue::at($cursor);
+        return Block_Continue::at($cursor);
     }
-
-    public function isContainer(): bool
+    public function is_container(): bool
     {
         return true;
     }
-
-    public function canContain(AbstractBlock $childBlock): bool
+    public function can_contain(Abstract_Block $child_block): bool
     {
-        return $childBlock instanceof DescriptionTerm || $childBlock instanceof Description;
+        return $child_block instanceof Description_Term || $child_block instanceof Description;
     }
 }

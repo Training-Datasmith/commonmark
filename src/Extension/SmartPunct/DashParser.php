@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,47 +12,42 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Smart_Punct;
 
-namespace League\CommonMark\Extension\SmartPunct;
-
-use League\CommonMark\Node\Inline\Text;
-use League\CommonMark\Parser\Inline\InlineParserInterface;
-use League\CommonMark\Parser\Inline\InlineParserMatch;
-use League\CommonMark\Parser\InlineParserContext;
-
-final class DashParser implements InlineParserInterface
+use League\Common_Mark\Node\Inline\Text;
+use League\Common_Mark\Parser\Inline\Inline_Parser_Interface;
+use League\Common_Mark\Parser\Inline\Inline_Parser_Match;
+use League\Common_Mark\Parser\Inline_Parser_Context;
+final class Dash_Parser implements Inline_Parser_Interface
 {
     private const EN_DASH = '–';
     private const EM_DASH = '—';
-
-    public function getMatchDefinition(): InlineParserMatch
+    public function get_match_definition(): Inline_Parser_Match
     {
-        return InlineParserMatch::regex('(?<!-)(-{2,})');
+        return Inline_Parser_Match::regex('(?<!-)(-{2,})');
     }
-
-    public function parse(InlineParserContext $inlineContext): bool
+    public function parse(Inline_Parser_Context $inline_context): bool
     {
-        $count = $inlineContext->getFullMatchLength();
-        $inlineContext->getCursor()->advanceBy($count);
-
-        $enCount = 0;
-        $emCount = 0;
-        if ($count % 3 === 0) { // If divisible by 3, use all em dashes
-            $emCount = (int) ($count / 3);
-        } elseif ($count % 2 === 0) { // If divisible by 2, use all en dashes
-            $enCount = (int) ($count / 2);
-        } elseif ($count % 3 === 2) { // If 2 extra dashes, use en dash for last 2; em dashes for rest
-            $emCount = (int) (($count - 2) / 3);
-            $enCount = 1;
-        } else { // Use en dashes for last 4 hyphens; em dashes for rest
-            $emCount = (int) (($count - 4) / 3);
-            $enCount = 2;
+        $count = $inline_context->get_full_match_length();
+        $inline_context->get_cursor()->advance_by($count);
+        $en_count = 0;
+        $em_count = 0;
+        if ($count % 3 === 0) {
+            // If divisible by 3, use all em dashes
+            $em_count = (int) ($count / 3);
+        } elseif ($count % 2 === 0) {
+            // If divisible by 2, use all en dashes
+            $en_count = (int) ($count / 2);
+        } elseif ($count % 3 === 2) {
+            // If 2 extra dashes, use en dash for last 2; em dashes for rest
+            $em_count = (int) (($count - 2) / 3);
+            $en_count = 1;
+        } else {
+            // Use en dashes for last 4 hyphens; em dashes for rest
+            $em_count = (int) (($count - 4) / 3);
+            $en_count = 2;
         }
-
-        $inlineContext->getContainer()->appendChild(new Text(
-            \str_repeat(self::EM_DASH, $emCount) . \str_repeat(self::EN_DASH, $enCount)
-        ));
-
+        $inline_context->get_container()->append_child(new Text(\str_repeat(self::EM_DASH, $em_count) . \str_repeat(self::EN_DASH, $en_count)));
         return true;
     }
 }

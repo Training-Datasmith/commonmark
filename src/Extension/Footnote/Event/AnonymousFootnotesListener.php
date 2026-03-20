@@ -9,55 +9,43 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace League\Common_Mark\Extension\Footnote\Event;
 
-declare(strict_types=1);
-
-namespace League\CommonMark\Extension\Footnote\Event;
-
-use League\CommonMark\Event\DocumentParsedEvent;
-use League\CommonMark\Extension\Footnote\Node\Footnote;
-use League\CommonMark\Extension\Footnote\Node\FootnoteBackref;
-use League\CommonMark\Extension\Footnote\Node\FootnoteRef;
-use League\CommonMark\Node\Block\Paragraph;
-use League\CommonMark\Node\Inline\Text;
-use League\CommonMark\Reference\Reference;
-use League\Config\ConfigurationAwareInterface;
-use League\Config\ConfigurationInterface;
-
-final class AnonymousFootnotesListener implements ConfigurationAwareInterface
+use League\Common_Mark\Event\Document_Parsed_Event;
+use League\Common_Mark\Extension\Footnote\Node\Footnote;
+use League\Common_Mark\Extension\Footnote\Node\Footnote_Backref;
+use League\Common_Mark\Extension\Footnote\Node\Footnote_Ref;
+use League\Common_Mark\Node\Block\Paragraph;
+use League\Common_Mark\Node\Inline\Text;
+use League\Common_Mark\Reference\Reference;
+use League\Config\Configuration_Aware_Interface;
+use League\Config\Configuration_Interface;
+final class Anonymous_Footnotes_Listener implements Configuration_Aware_Interface
 {
-    private ConfigurationInterface $config;
-
-    public function onDocumentParsed(DocumentParsedEvent $event): void
+    private Configuration_Interface $config;
+    public function on_document_parsed(Document_Parsed_Event $event): void
     {
-        $document = $event->getDocument();
+        $document = $event->get_document();
         foreach ($document->iterator() as $node) {
-            if (! $node instanceof FootnoteRef) {
+            if (!$node instanceof Footnote_Ref) {
                 continue;
             }
-            if (($text = $node->getContent()) === null) {
+            if (($text = $node->get_content()) === null) {
                 continue;
             }
             // Anonymous footnote needs to create a footnote from its content
-            $existingReference = $node->getReference();
-            $newReference      = new Reference(
-                $existingReference->getLabel(),
-                '#' . $this->config->get('footnote/ref_id_prefix') . $existingReference->getLabel(),
-                $existingReference->getTitle()
-            );
-
+            $existing_reference = $node->get_reference();
+            $new_reference = new Reference($existing_reference->get_label(), '#' . $this->config->get('footnote/ref_id_prefix') . $existing_reference->get_label(), $existing_reference->get_title());
             $paragraph = new Paragraph();
-            $paragraph->appendChild(new Text($text));
-            $paragraph->appendChild(new FootnoteBackref($newReference));
-
-            $footnote = new Footnote($newReference);
-            $footnote->appendChild($paragraph);
-
-            $document->appendChild($footnote);
+            $paragraph->append_child(new Text($text));
+            $paragraph->append_child(new Footnote_Backref($new_reference));
+            $footnote = new Footnote($new_reference);
+            $footnote->append_child($paragraph);
+            $document->append_child($footnote);
         }
     }
-
-    public function setConfiguration(ConfigurationInterface $configuration): void
+    public function set_configuration(Configuration_Interface $configuration): void
     {
         $this->config = $configuration;
     }

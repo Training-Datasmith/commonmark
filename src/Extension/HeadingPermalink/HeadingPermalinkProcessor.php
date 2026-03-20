@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,92 +9,74 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Heading_Permalink;
 
-namespace League\CommonMark\Extension\HeadingPermalink;
-
-use League\CommonMark\Environment\EnvironmentAwareInterface;
-use League\CommonMark\Environment\EnvironmentInterface;
-use League\CommonMark\Event\DocumentParsedEvent;
-use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
-use League\CommonMark\Node\NodeIterator;
-use League\CommonMark\Node\RawMarkupContainerInterface;
-use League\CommonMark\Node\StringContainerHelper;
-use League\CommonMark\Normalizer\TextNormalizerInterface;
-use League\Config\ConfigurationInterface;
-use League\Config\Exception\InvalidConfigurationException;
-
+use League\Common_Mark\Environment\Environment_Aware_Interface;
+use League\Common_Mark\Environment\Environment_Interface;
+use League\Common_Mark\Event\Document_Parsed_Event;
+use League\Common_Mark\Extension\Common_Mark\Node\Block\Heading;
+use League\Common_Mark\Node\Node_Iterator;
+use League\Common_Mark\Node\Raw_Markup_Container_Interface;
+use League\Common_Mark\Node\String_Container_Helper;
+use League\Common_Mark\Normalizer\Text_Normalizer_Interface;
+use League\Config\Configuration_Interface;
+use League\Config\Exception\Invalid_Configuration_Exception;
 /**
  * Searches the Document for Heading elements and adds HeadingPermalinks to each one
  */
-final class HeadingPermalinkProcessor implements EnvironmentAwareInterface
+final class Heading_Permalink_Processor implements Environment_Aware_Interface
 {
     public const INSERT_BEFORE = 'before';
-    public const INSERT_AFTER  = 'after';
-    public const INSERT_NONE   = 'none';
-
+    public const INSERT_AFTER = 'after';
+    public const INSERT_NONE = 'none';
     /** @psalm-readonly-allow-private-mutation */
-    private TextNormalizerInterface $slugNormalizer;
-
+    private Text_Normalizer_Interface $slug_normalizer;
     /** @psalm-readonly-allow-private-mutation */
-    private ConfigurationInterface $config;
-
-    public function setEnvironment(EnvironmentInterface $environment): void
+    private Configuration_Interface $config;
+    public function set_environment(Environment_Interface $environment): void
     {
-        $this->config         = $environment->getConfiguration();
-        $this->slugNormalizer = $environment->getSlugNormalizer();
+        $this->config = $environment->get_configuration();
+        $this->slug_normalizer = $environment->get_slug_normalizer();
     }
-
-    public function __invoke(DocumentParsedEvent $e): void
+    public function __invoke(Document_Parsed_Event $e): void
     {
-        $min            = (int) $this->config->get('heading_permalink/min_heading_level');
-        $max            = (int) $this->config->get('heading_permalink/max_heading_level');
-        $applyToHeading = (bool) $this->config->get('heading_permalink/apply_id_to_heading');
-        $idPrefix       = (string) $this->config->get('heading_permalink/id_prefix');
-        $slugLength     = (int) $this->config->get('slug_normalizer/max_length');
-        $headingClass   = (string) $this->config->get('heading_permalink/heading_class');
-
-        if ($idPrefix !== '') {
-            $idPrefix .= '-';
+        $min = (int) $this->config->get('heading_permalink/min_heading_level');
+        $max = (int) $this->config->get('heading_permalink/max_heading_level');
+        $apply_to_heading = (bool) $this->config->get('heading_permalink/apply_id_to_heading');
+        $id_prefix = (string) $this->config->get('heading_permalink/id_prefix');
+        $slug_length = (int) $this->config->get('slug_normalizer/max_length');
+        $heading_class = (string) $this->config->get('heading_permalink/heading_class');
+        if ($id_prefix !== '') {
+            $id_prefix .= '-';
         }
-
-        foreach ($e->getDocument()->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
-            if ($node instanceof Heading && $node->getLevel() >= $min && $node->getLevel() <= $max) {
-                $this->addHeadingLink($node, $slugLength, $idPrefix, $applyToHeading, $headingClass);
+        foreach ($e->get_document()->iterator(Node_Iterator::FLAG_BLOCKS_ONLY) as $node) {
+            if ($node instanceof Heading && $node->get_level() >= $min && $node->get_level() <= $max) {
+                $this->add_heading_link($node, $slug_length, $id_prefix, $apply_to_heading, $heading_class);
             }
         }
     }
-
-    private function addHeadingLink(Heading $heading, int $slugLength, string $idPrefix, bool $applyToHeading, string $headingClass): void
+    private function add_heading_link(Heading $heading, int $slug_length, string $id_prefix, bool $apply_to_heading, string $heading_class): void
     {
-        $text = StringContainerHelper::getChildText($heading, [RawMarkupContainerInterface::class]);
-        $slug = $this->slugNormalizer->normalize($text, [
-            'node' => $heading,
-            'length' => $slugLength,
-        ]);
-
-        if ($applyToHeading) {
-            $heading->data->set('attributes/id', $idPrefix . $slug);
+        $text = String_Container_Helper::get_child_text($heading, [Raw_Markup_Container_Interface::class]);
+        $slug = $this->slug_normalizer->normalize($text, ['node' => $heading, 'length' => $slug_length]);
+        if ($apply_to_heading) {
+            $heading->data->set('attributes/id', $id_prefix . $slug);
         }
-
-        if ($headingClass !== '') {
-            $heading->data->append('attributes/class', $headingClass);
+        if ($heading_class !== '') {
+            $heading->data->append('attributes/class', $heading_class);
         }
-
-        $headingLinkAnchor = new HeadingPermalink($slug);
-
+        $heading_link_anchor = new Heading_Permalink($slug);
         switch ($this->config->get('heading_permalink/insert')) {
             case self::INSERT_BEFORE:
-                $heading->prependChild($headingLinkAnchor);
-
+                $heading->prepend_child($heading_link_anchor);
                 return;
             case self::INSERT_AFTER:
-                $heading->appendChild($headingLinkAnchor);
-
+                $heading->append_child($heading_link_anchor);
                 return;
             case self::INSERT_NONE:
                 return;
             default:
-                throw new InvalidConfigurationException("Invalid configuration value for heading_permalink/insert; expected 'before', 'after', or 'none'");
+                throw new Invalid_Configuration_Exception("Invalid configuration value for heading_permalink/insert; expected 'before', 'after', or 'none'");
         }
     }
 }

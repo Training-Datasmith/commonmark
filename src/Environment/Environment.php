@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,38 +12,36 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Environment;
 
-namespace League\CommonMark\Environment;
-
-use League\CommonMark\Delimiter\DelimiterParser;
-use League\CommonMark\Delimiter\Processor\DelimiterProcessorCollection;
-use League\CommonMark\Delimiter\Processor\DelimiterProcessorInterface;
-use League\CommonMark\Event\DocumentParsedEvent;
-use League\CommonMark\Event\ListenerData;
-use League\CommonMark\Exception\AlreadyInitializedException;
-use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
-use League\CommonMark\Extension\ConfigurableExtensionInterface;
-use League\CommonMark\Extension\ExtensionInterface;
-use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
-use League\CommonMark\Normalizer\SlugNormalizer;
-use League\CommonMark\Normalizer\TextNormalizerInterface;
-use League\CommonMark\Normalizer\UniqueSlugNormalizer;
-use League\CommonMark\Normalizer\UniqueSlugNormalizerInterface;
-use League\CommonMark\Parser\Block\BlockStartParserInterface;
-use League\CommonMark\Parser\Block\SkipLinesStartingWithLettersParser;
-use League\CommonMark\Parser\Inline\InlineParserInterface;
-use League\CommonMark\Renderer\NodeRendererInterface;
-use League\CommonMark\Util\HtmlFilter;
-use League\CommonMark\Util\PrioritizedList;
+use League\Common_Mark\Delimiter\Delimiter_Parser;
+use League\Common_Mark\Delimiter\Processor\Delimiter_Processor_Collection;
+use League\Common_Mark\Delimiter\Processor\Delimiter_Processor_Interface;
+use League\Common_Mark\Event\Document_Parsed_Event;
+use League\Common_Mark\Event\Listener_Data;
+use League\Common_Mark\Exception\Already_Initialized_Exception;
+use League\Common_Mark\Extension\Common_Mark\Common_Mark_Core_Extension;
+use League\Common_Mark\Extension\Configurable_Extension_Interface;
+use League\Common_Mark\Extension\Extension_Interface;
+use League\Common_Mark\Extension\Github_Flavored_Markdown_Extension;
+use League\Common_Mark\Normalizer\Slug_Normalizer;
+use League\Common_Mark\Normalizer\Text_Normalizer_Interface;
+use League\Common_Mark\Normalizer\Unique_Slug_Normalizer;
+use League\Common_Mark\Normalizer\Unique_Slug_Normalizer_Interface;
+use League\Common_Mark\Parser\Block\Block_Start_Parser_Interface;
+use League\Common_Mark\Parser\Block\Skip_Lines_Starting_With_Letters_Parser;
+use League\Common_Mark\Parser\Inline\Inline_Parser_Interface;
+use League\Common_Mark\Renderer\Node_Renderer_Interface;
+use League\Common_Mark\Util\Html_Filter;
+use League\Common_Mark\Util\Prioritized_List;
 use League\Config\Configuration;
-use League\Config\ConfigurationAwareInterface;
-use League\Config\ConfigurationInterface;
+use League\Config\Configuration_Aware_Interface;
+use League\Config\Configuration_Interface;
 use Nette\Schema\Expect;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\EventDispatcher\ListenerProviderInterface;
-use Psr\EventDispatcher\StoppableEventInterface;
-
-final class Environment implements EnvironmentInterface, EnvironmentBuilderInterface, ListenerProviderInterface
+use Psr\Event_Dispatcher\Event_Dispatcher_Interface;
+use Psr\Event_Dispatcher\Listener_Provider_Interface;
+use Psr\Event_Dispatcher\Stoppable_Event_Interface;
+final class Environment implements Environment_Interface, Environment_Builder_Interface, Listener_Provider_Interface
 {
     /**
      * @var ExtensionInterface[]
@@ -52,397 +49,306 @@ final class Environment implements EnvironmentInterface, EnvironmentBuilderInter
      * @psalm-readonly-allow-private-mutation
      */
     private array $extensions = [];
-
     /**
      * @var ExtensionInterface[]
      *
      * @psalm-readonly-allow-private-mutation
      */
-    private array $uninitializedExtensions = [];
-
+    private array $uninitialized_extensions = [];
     /** @psalm-readonly-allow-private-mutation */
-    private bool $extensionsInitialized = false;
-
+    private bool $extensions_initialized = false;
     /**
      * @var PrioritizedList<BlockStartParserInterface>
      *
      * @psalm-readonly
      */
-    private PrioritizedList $blockStartParsers;
-
+    private Prioritized_List $block_start_parsers;
     /**
      * @var PrioritizedList<InlineParserInterface>
      *
      * @psalm-readonly
      */
-    private PrioritizedList $inlineParsers;
-
+    private Prioritized_List $inline_parsers;
     /** @psalm-readonly */
-    private DelimiterProcessorCollection $delimiterProcessors;
-
+    private Delimiter_Processor_Collection $delimiter_processors;
     /**
      * @var array<string, PrioritizedList<NodeRendererInterface>>
      *
      * @psalm-readonly-allow-private-mutation
      */
-    private array $renderersByClass = [];
-
+    private array $renderers_by_class = [];
     /**
      * @var PrioritizedList<ListenerData>
      *
      * @psalm-readonly-allow-private-mutation
      */
-    private PrioritizedList $listenerData;
-
-    private ?EventDispatcherInterface $eventDispatcher = null;
-
+    private Prioritized_List $listener_data;
+    private ?Event_Dispatcher_Interface $event_dispatcher = null;
     /** @psalm-readonly */
     private Configuration $config;
-
-    private ?TextNormalizerInterface $slugNormalizer = null;
-
+    private ?Text_Normalizer_Interface $slug_normalizer = null;
     /**
      * @param array<string, mixed> $config
      */
     public function __construct(array $config = [])
     {
-        $this->config = self::createDefaultConfiguration();
+        $this->config = self::create_default_configuration();
         $this->config->merge($config);
-
-        $this->blockStartParsers   = new PrioritizedList();
-        $this->inlineParsers       = new PrioritizedList();
-        $this->listenerData        = new PrioritizedList();
-        $this->delimiterProcessors = new DelimiterProcessorCollection();
-
+        $this->block_start_parsers = new Prioritized_List();
+        $this->inline_parsers = new Prioritized_List();
+        $this->listener_data = new Prioritized_List();
+        $this->delimiter_processors = new Delimiter_Processor_Collection();
         // Performance optimization: always include a block "parser" that aborts parsing if a line starts with a letter
         // and is therefore unlikely to match any lines as a block start.
-        $this->addBlockStartParser(new SkipLinesStartingWithLettersParser(), 249);
+        $this->add_block_start_parser(new Skip_Lines_Starting_With_Letters_Parser(), 249);
     }
-
-    public function getConfiguration(): ConfigurationInterface
+    public function get_configuration(): Configuration_Interface
     {
         return $this->config->reader();
     }
-
     /**
      * @deprecated Environment::mergeConfig() is deprecated since league/commonmark v2.0 and will be removed in v3.0. Configuration should be set when instantiating the environment instead.
      *
      * @param array<string, mixed> $config
      */
-    public function mergeConfig(array $config): void
+    public function merge_config(array $config): void
     {
         @\trigger_error('Environment::mergeConfig() is deprecated since league/commonmark v2.0 and will be removed in v3.0. Configuration should be set when instantiating the environment instead.', \E_USER_DEPRECATED);
-
-        $this->assertUninitialized('Failed to modify configuration.');
-
+        $this->assert_uninitialized('Failed to modify configuration.');
         $this->config->merge($config);
     }
-
-    public function addBlockStartParser(BlockStartParserInterface $parser, int $priority = 0): EnvironmentBuilderInterface
+    public function add_block_start_parser(Block_Start_Parser_Interface $parser, int $priority = 0): Environment_Builder_Interface
     {
-        $this->assertUninitialized('Failed to add block start parser.');
-
-        $this->blockStartParsers->add($parser, $priority);
-        $this->injectEnvironmentAndConfigurationIfNeeded($parser);
-
+        $this->assert_uninitialized('Failed to add block start parser.');
+        $this->block_start_parsers->add($parser, $priority);
+        $this->inject_environment_and_configuration_if_needed($parser);
         return $this;
     }
-
-    public function addInlineParser(InlineParserInterface $parser, int $priority = 0): EnvironmentBuilderInterface
+    public function add_inline_parser(Inline_Parser_Interface $parser, int $priority = 0): Environment_Builder_Interface
     {
-        $this->assertUninitialized('Failed to add inline parser.');
-
-        $this->inlineParsers->add($parser, $priority);
-        $this->injectEnvironmentAndConfigurationIfNeeded($parser);
-
+        $this->assert_uninitialized('Failed to add inline parser.');
+        $this->inline_parsers->add($parser, $priority);
+        $this->inject_environment_and_configuration_if_needed($parser);
         return $this;
     }
-
-    public function addDelimiterProcessor(DelimiterProcessorInterface $processor): EnvironmentBuilderInterface
+    public function add_delimiter_processor(Delimiter_Processor_Interface $processor): Environment_Builder_Interface
     {
-        $this->assertUninitialized('Failed to add delimiter processor.');
-        $this->delimiterProcessors->add($processor);
-        $this->injectEnvironmentAndConfigurationIfNeeded($processor);
-
+        $this->assert_uninitialized('Failed to add delimiter processor.');
+        $this->delimiter_processors->add($processor);
+        $this->inject_environment_and_configuration_if_needed($processor);
         return $this;
     }
-
-    public function addRenderer(string $nodeClass, NodeRendererInterface $renderer, int $priority = 0): EnvironmentBuilderInterface
+    public function add_renderer(string $node_class, Node_Renderer_Interface $renderer, int $priority = 0): Environment_Builder_Interface
     {
-        $this->assertUninitialized('Failed to add renderer.');
-
-        if (! isset($this->renderersByClass[$nodeClass])) {
-            $this->renderersByClass[$nodeClass] = new PrioritizedList();
+        $this->assert_uninitialized('Failed to add renderer.');
+        if (!isset($this->renderers_by_class[$node_class])) {
+            $this->renderers_by_class[$node_class] = new Prioritized_List();
         }
-
-        $this->renderersByClass[$nodeClass]->add($renderer, $priority);
-        $this->injectEnvironmentAndConfigurationIfNeeded($renderer);
-
+        $this->renderers_by_class[$node_class]->add($renderer, $priority);
+        $this->inject_environment_and_configuration_if_needed($renderer);
         return $this;
     }
-
     /**
      * {@inheritDoc}
      */
-    public function getBlockStartParsers(): iterable
+    public function get_block_start_parsers(): iterable
     {
-        if (! $this->extensionsInitialized) {
-            $this->initializeExtensions();
+        if (!$this->extensions_initialized) {
+            $this->initialize_extensions();
         }
-
-        return $this->blockStartParsers->getIterator();
+        return $this->block_start_parsers->getIterator();
     }
-
-    public function getDelimiterProcessors(): DelimiterProcessorCollection
+    public function get_delimiter_processors(): Delimiter_Processor_Collection
     {
-        if (! $this->extensionsInitialized) {
-            $this->initializeExtensions();
+        if (!$this->extensions_initialized) {
+            $this->initialize_extensions();
         }
-
-        return $this->delimiterProcessors;
+        return $this->delimiter_processors;
     }
-
     /**
      * {@inheritDoc}
      */
-    public function getRenderersForClass(string $nodeClass): iterable
+    public function get_renderers_for_class(string $node_class): iterable
     {
-        if (! $this->extensionsInitialized) {
-            $this->initializeExtensions();
+        if (!$this->extensions_initialized) {
+            $this->initialize_extensions();
         }
-
         // If renderers are defined for this specific class, return them immediately
-        if (isset($this->renderersByClass[$nodeClass])) {
-            return $this->renderersByClass[$nodeClass];
+        if (isset($this->renderers_by_class[$node_class])) {
+            return $this->renderers_by_class[$node_class];
         }
-
         /** @psalm-suppress TypeDoesNotContainType -- Bug: https://github.com/vimeo/psalm/issues/3332 */
-        while (\class_exists($parent ??= $nodeClass) && $parent = \get_parent_class($parent)) {
-            if (! isset($this->renderersByClass[$parent])) {
+        while (\class_exists($parent ??= $node_class) && $parent = \get_parent_class($parent)) {
+            if (!isset($this->renderers_by_class[$parent])) {
                 continue;
             }
-
             // "Cache" this result to avoid future loops
-            return $this->renderersByClass[$nodeClass] = $this->renderersByClass[$parent];
+            return $this->renderers_by_class[$node_class] = $this->renderers_by_class[$parent];
         }
-
         return [];
     }
-
     /**
      * {@inheritDoc}
      */
-    public function getExtensions(): iterable
+    public function get_extensions(): iterable
     {
         return $this->extensions;
     }
-
     /**
      * Add a single extension
      *
      * @return $this
      */
-    public function addExtension(ExtensionInterface $extension): EnvironmentBuilderInterface
+    public function add_extension(Extension_Interface $extension): Environment_Builder_Interface
     {
-        $this->assertUninitialized('Failed to add extension.');
-
-        $this->extensions[]              = $extension;
-        $this->uninitializedExtensions[] = $extension;
-
-        if ($extension instanceof ConfigurableExtensionInterface) {
-            $extension->configureSchema($this->config);
+        $this->assert_uninitialized('Failed to add extension.');
+        $this->extensions[] = $extension;
+        $this->uninitialized_extensions[] = $extension;
+        if ($extension instanceof Configurable_Extension_Interface) {
+            $extension->configure_schema($this->config);
         }
-
         return $this;
     }
-
-    private function initializeExtensions(): void
+    private function initialize_extensions(): void
     {
         // Initialize the slug normalizer
-        $this->getSlugNormalizer();
-
+        $this->get_slug_normalizer();
         // Ask all extensions to register their components
-        while (\count($this->uninitializedExtensions) > 0) {
-            foreach ($this->uninitializedExtensions as $i => $extension) {
+        while (\count($this->uninitialized_extensions) > 0) {
+            foreach ($this->uninitialized_extensions as $i => $extension) {
                 $extension->register($this);
-                unset($this->uninitializedExtensions[$i]);
+                unset($this->uninitialized_extensions[$i]);
             }
         }
-
-        $this->extensionsInitialized = true;
-
+        $this->extensions_initialized = true;
         // Create the special delimiter parser if any processors were registered
-        if ($this->delimiterProcessors->count() > 0) {
-            $this->inlineParsers->add(new DelimiterParser($this->delimiterProcessors), PHP_INT_MIN);
+        if ($this->delimiter_processors->count() > 0) {
+            $this->inline_parsers->add(new Delimiter_Parser($this->delimiter_processors), PHP_INT_MIN);
         }
     }
-
-    private function injectEnvironmentAndConfigurationIfNeeded(object $object): void
+    private function inject_environment_and_configuration_if_needed(object $object): void
     {
-        if ($object instanceof EnvironmentAwareInterface) {
-            $object->setEnvironment($this);
+        if ($object instanceof Environment_Aware_Interface) {
+            $object->set_environment($this);
         }
-
-        if ($object instanceof ConfigurationAwareInterface) {
-            $object->setConfiguration($this->config->reader());
+        if ($object instanceof Configuration_Aware_Interface) {
+            $object->set_configuration($this->config->reader());
         }
     }
-
     /**
      * @deprecated Instantiate the environment and add the extension yourself
      *
      * @param array<string, mixed> $config
      */
-    public static function createCommonMarkEnvironment(array $config = []): Environment
+    public static function create_common_mark_environment(array $config = []): Environment
     {
         $environment = new self($config);
-        $environment->addExtension(new CommonMarkCoreExtension());
-
+        $environment->add_extension(new Common_Mark_Core_Extension());
         return $environment;
     }
-
     /**
      * @deprecated Instantiate the environment and add the extension yourself
      *
      * @param array<string, mixed> $config
      */
-    public static function createGFMEnvironment(array $config = []): Environment
+    public static function create_gfm_environment(array $config = []): Environment
     {
         $environment = new self($config);
-        $environment->addExtension(new CommonMarkCoreExtension());
-        $environment->addExtension(new GithubFlavoredMarkdownExtension());
-
+        $environment->add_extension(new Common_Mark_Core_Extension());
+        $environment->add_extension(new Github_Flavored_Markdown_Extension());
         return $environment;
     }
-
-    public function addEventListener(string $eventClass, callable $listener, int $priority = 0): EnvironmentBuilderInterface
+    public function add_event_listener(string $event_class, callable $listener, int $priority = 0): Environment_Builder_Interface
     {
-        $this->assertUninitialized('Failed to add event listener.');
-
-        $this->listenerData->add(new ListenerData($eventClass, $listener), $priority);
-
+        $this->assert_uninitialized('Failed to add event listener.');
+        $this->listener_data->add(new Listener_Data($event_class, $listener), $priority);
         if (\is_object($listener)) {
-            $this->injectEnvironmentAndConfigurationIfNeeded($listener);
+            $this->inject_environment_and_configuration_if_needed($listener);
         } elseif (\is_array($listener) && \is_object($listener[0])) {
-            $this->injectEnvironmentAndConfigurationIfNeeded($listener[0]);
+            $this->inject_environment_and_configuration_if_needed($listener[0]);
         }
-
         return $this;
     }
-
     public function dispatch(object $event): object
     {
-        if (! $this->extensionsInitialized) {
-            $this->initializeExtensions();
+        if (!$this->extensions_initialized) {
+            $this->initialize_extensions();
         }
-
-        if ($this->eventDispatcher !== null) {
-            return $this->eventDispatcher->dispatch($event);
+        if ($this->event_dispatcher !== null) {
+            return $this->event_dispatcher->dispatch($event);
         }
-
-        foreach ($this->getListenersForEvent($event) as $listener) {
-            if ($event instanceof StoppableEventInterface && $event->isPropagationStopped()) {
+        foreach ($this->get_listeners_for_event($event) as $listener) {
+            if ($event instanceof Stoppable_Event_Interface && $event->is_propagation_stopped()) {
                 return $event;
             }
-
             $listener($event);
         }
-
         return $event;
     }
-
-    public function setEventDispatcher(EventDispatcherInterface $dispatcher): void
+    public function set_event_dispatcher(Event_Dispatcher_Interface $dispatcher): void
     {
-        $this->eventDispatcher = $dispatcher;
+        $this->event_dispatcher = $dispatcher;
     }
-
     /**
      * {@inheritDoc}
      *
      * @return iterable<callable>
      */
-    public function getListenersForEvent(object $event): iterable
+    public function get_listeners_for_event(object $event): iterable
     {
-        foreach ($this->listenerData as $listenerData) {
-            \assert($listenerData instanceof ListenerData);
-
+        foreach ($this->listener_data as $listener_data) {
+            \assert($listener_data instanceof Listener_Data);
             /** @psalm-suppress ArgumentTypeCoercion */
-            if (! \is_a($event, $listenerData->getEvent())) {
+            if (!\is_a($event, $listener_data->get_event())) {
                 continue;
             }
-
-            yield function (object $event) use ($listenerData) {
-                if (! $this->extensionsInitialized) {
-                    $this->initializeExtensions();
+            yield function (object $event) use ($listener_data) {
+                if (!$this->extensions_initialized) {
+                    $this->initialize_extensions();
                 }
-
-                return \call_user_func($listenerData->getListener(), $event);
+                return \call_user_func($listener_data->get_listener(), $event);
             };
         }
     }
-
     /**
      * @return iterable<InlineParserInterface>
      */
-    public function getInlineParsers(): iterable
+    public function get_inline_parsers(): iterable
     {
-        if (! $this->extensionsInitialized) {
-            $this->initializeExtensions();
+        if (!$this->extensions_initialized) {
+            $this->initialize_extensions();
         }
-
-        return $this->inlineParsers->getIterator();
+        return $this->inline_parsers->getIterator();
     }
-
-    public function getSlugNormalizer(): TextNormalizerInterface
+    public function get_slug_normalizer(): Text_Normalizer_Interface
     {
-        if ($this->slugNormalizer === null) {
+        if ($this->slug_normalizer === null) {
             $normalizer = $this->config->get('slug_normalizer/instance');
-            \assert($normalizer instanceof TextNormalizerInterface);
-            $this->injectEnvironmentAndConfigurationIfNeeded($normalizer);
-
-            if ($this->config->get('slug_normalizer/unique') !== UniqueSlugNormalizerInterface::DISABLED && ! $normalizer instanceof UniqueSlugNormalizer) {
-                $normalizer = new UniqueSlugNormalizer($normalizer);
+            \assert($normalizer instanceof Text_Normalizer_Interface);
+            $this->inject_environment_and_configuration_if_needed($normalizer);
+            if ($this->config->get('slug_normalizer/unique') !== Unique_Slug_Normalizer_Interface::DISABLED && !$normalizer instanceof Unique_Slug_Normalizer) {
+                $normalizer = new Unique_Slug_Normalizer($normalizer);
             }
-
-            if ($normalizer instanceof UniqueSlugNormalizer) {
-                if ($this->config->get('slug_normalizer/unique') === UniqueSlugNormalizerInterface::PER_DOCUMENT) {
-                    $this->addEventListener(DocumentParsedEvent::class, [$normalizer, 'clearHistory'], -1000);
+            if ($normalizer instanceof Unique_Slug_Normalizer) {
+                if ($this->config->get('slug_normalizer/unique') === Unique_Slug_Normalizer_Interface::PER_DOCUMENT) {
+                    $this->add_event_listener(Document_Parsed_Event::class, [$normalizer, 'clearHistory'], -1000);
                 }
             }
-
-            $this->slugNormalizer = $normalizer;
+            $this->slug_normalizer = $normalizer;
         }
-
-        return $this->slugNormalizer;
+        return $this->slug_normalizer;
     }
-
     /**
      * @throws AlreadyInitializedException
      */
-    private function assertUninitialized(string $message): void
+    private function assert_uninitialized(string $message): void
     {
-        if ($this->extensionsInitialized) {
-            throw new AlreadyInitializedException($message . ' Extensions have already been initialized.');
+        if ($this->extensions_initialized) {
+            throw new Already_Initialized_Exception($message . ' Extensions have already been initialized.');
         }
     }
-
-    public static function createDefaultConfiguration(): Configuration
+    public static function create_default_configuration(): Configuration
     {
-        return new Configuration([
-            'html_input' => Expect::anyOf(HtmlFilter::STRIP, HtmlFilter::ALLOW, HtmlFilter::ESCAPE)->default(HtmlFilter::ALLOW),
-            'allow_unsafe_links' => Expect::bool(true),
-            'max_nesting_level' => Expect::type('int')->default(PHP_INT_MAX),
-            'max_delimiters_per_line' => Expect::type('int')->default(PHP_INT_MAX),
-            'renderer' => Expect::structure([
-                'block_separator' => Expect::string("\n"),
-                'inner_separator' => Expect::string("\n"),
-                'soft_break' => Expect::string("\n"),
-            ]),
-            'slug_normalizer' => Expect::structure([
-                'instance' => Expect::type(TextNormalizerInterface::class)->default(new SlugNormalizer()),
-                'max_length' => Expect::int()->min(0)->default(255),
-                'unique' => Expect::anyOf(UniqueSlugNormalizerInterface::DISABLED, UniqueSlugNormalizerInterface::PER_ENVIRONMENT, UniqueSlugNormalizerInterface::PER_DOCUMENT)->default(UniqueSlugNormalizerInterface::PER_DOCUMENT),
-            ]),
-        ]);
+        return new Configuration(['html_input' => Expect::any_of(Html_Filter::STRIP, Html_Filter::ALLOW, Html_Filter::ESCAPE)->default(Html_Filter::ALLOW), 'allow_unsafe_links' => Expect::bool(true), 'max_nesting_level' => Expect::type('int')->default(PHP_INT_MAX), 'max_delimiters_per_line' => Expect::type('int')->default(PHP_INT_MAX), 'renderer' => Expect::structure(['block_separator' => Expect::string("\n"), 'inner_separator' => Expect::string("\n"), 'soft_break' => Expect::string("\n")]), 'slug_normalizer' => Expect::structure(['instance' => Expect::type(Text_Normalizer_Interface::class)->default(new Slug_Normalizer()), 'max_length' => Expect::int()->min(0)->default(255), 'unique' => Expect::any_of(Unique_Slug_Normalizer_Interface::DISABLED, Unique_Slug_Normalizer_Interface::PER_ENVIRONMENT, Unique_Slug_Normalizer_Interface::PER_DOCUMENT)->default(Unique_Slug_Normalizer_Interface::PER_DOCUMENT)])]);
     }
 }

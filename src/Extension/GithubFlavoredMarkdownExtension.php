@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,24 +9,22 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension;
 
-namespace League\CommonMark\Extension;
-
-use League\CommonMark\Environment\EnvironmentBuilderInterface;
-use League\CommonMark\Extension\Autolink\AutolinkExtension;
-use League\CommonMark\Extension\DisallowedRawHtml\DisallowedRawHtmlExtension;
-use League\CommonMark\Extension\Strikethrough\StrikethroughExtension;
-use League\CommonMark\Extension\Table\TableExtension;
-use League\CommonMark\Extension\TaskList\TaskListExtension;
-
-final class GithubFlavoredMarkdownExtension implements ExtensionInterface
+use League\Common_Mark\Environment\Environment_Builder_Interface;
+use League\Common_Mark\Extension\Autolink\Autolink_Extension;
+use League\Common_Mark\Extension\Disallowed_Raw_Html\Disallowed_Raw_Html_Extension;
+use League\Common_Mark\Extension\Strikethrough\Strikethrough_Extension;
+use League\Common_Mark\Extension\Table\Table_Extension;
+use League\Common_Mark\Extension\Task_List\Task_List_Extension;
+final class Github_Flavored_Markdown_Extension implements Extension_Interface
 {
-    public function register(EnvironmentBuilderInterface $environment): void
+    public function register(Environment_Builder_Interface $environment): void
     {
-        $environment->addExtension(new AutolinkExtension());
-        $environment->addExtension(new DisallowedRawHtmlExtension());
-        $environment->addExtension(new StrikethroughExtension());
-        $environment->addExtension(new TableExtension());
-        $environment->addExtension(new TaskListExtension());
+        $environment->add_extension(new Autolink_Extension());
+        $environment->add_extension(new Disallowed_Raw_Html_Extension());
+        $environment->add_extension(new Strikethrough_Extension());
+        $environment->add_extension(new Table_Extension());
+        $environment->add_extension(new Task_List_Extension());
     }
 }

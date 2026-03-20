@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,13 +9,11 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Mention\Generator;
 
-namespace League\CommonMark\Extension\Mention\Generator;
-
-use League\CommonMark\Extension\Mention\Mention;
-use League\CommonMark\Node\Inline\AbstractInline;
-
-interface MentionGeneratorInterface
+use League\Common_Mark\Extension\Mention\Mention;
+use League\Common_Mark\Node\Inline\Abstract_Inline;
+interface Mention_Generator_Interface
 {
-    public function generateMention(Mention $mention): ?AbstractInline;
+    public function generate_mention(Mention $mention): ?Abstract_Inline;
 }

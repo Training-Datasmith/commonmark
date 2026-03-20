@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,73 +9,62 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Delimiter;
 
-namespace League\CommonMark\Delimiter;
-
-use League\CommonMark\Node\Node;
-
+use League\Common_Mark\Node\Node;
 final class Bracket
 {
     private Node $node;
     private ?Bracket $previous;
-    private bool $hasNext = false;
+    private bool $has_next = false;
     private int $position;
     private bool $image;
     private bool $active = true;
-
     public function __construct(Node $node, ?Bracket $previous, int $position, bool $image)
     {
-        $this->node     = $node;
+        $this->node = $node;
         $this->previous = $previous;
         $this->position = $position;
-        $this->image    = $image;
+        $this->image = $image;
     }
-
-    public function getNode(): Node
+    public function get_node(): Node
     {
         return $this->node;
     }
-
-    public function getPrevious(): ?Bracket
+    public function get_previous(): ?Bracket
     {
         return $this->previous;
     }
-
-    public function hasNext(): bool
+    public function has_next(): bool
     {
-        return $this->hasNext;
+        return $this->has_next;
     }
-
-    public function getPosition(): int
+    public function get_position(): int
     {
         return $this->position;
     }
-
-    public function isImage(): bool
+    public function is_image(): bool
     {
         return $this->image;
     }
-
     /**
      * Only valid in the context of non-images (links)
      */
-    public function isActive(): bool
+    public function is_active(): bool
     {
         return $this->active;
     }
-
     /**
      * @internal
      */
-    public function setHasNext(bool $hasNext): void
+    public function set_has_next(bool $has_next): void
     {
-        $this->hasNext = $hasNext;
+        $this->has_next = $has_next;
     }
-
     /**
      * @internal
      */
-    public function setActive(bool $active): void
+    public function set_active(bool $active): void
     {
         $this->active = $active;
     }

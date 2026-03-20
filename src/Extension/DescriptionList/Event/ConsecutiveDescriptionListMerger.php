@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,31 +9,26 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Description_List\Event;
 
-namespace League\CommonMark\Extension\DescriptionList\Event;
-
-use League\CommonMark\Event\DocumentParsedEvent;
-use League\CommonMark\Extension\DescriptionList\Node\DescriptionList;
-use League\CommonMark\Node\NodeIterator;
-
-final class ConsecutiveDescriptionListMerger
+use League\Common_Mark\Event\Document_Parsed_Event;
+use League\Common_Mark\Extension\Description_List\Node\Description_List;
+use League\Common_Mark\Node\Node_Iterator;
+final class Consecutive_Description_List_Merger
 {
-    public function __invoke(DocumentParsedEvent $event): void
+    public function __invoke(Document_Parsed_Event $event): void
     {
-        foreach ($event->getDocument()->iterator(NodeIterator::FLAG_BLOCKS_ONLY) as $node) {
-            if (! $node instanceof DescriptionList) {
+        foreach ($event->get_document()->iterator(Node_Iterator::FLAG_BLOCKS_ONLY) as $node) {
+            if (!$node instanceof Description_List) {
                 continue;
             }
-
-            if (! ($prev = $node->previous()) instanceof DescriptionList) {
+            if (!($prev = $node->previous()) instanceof Description_List) {
                 continue;
             }
-
             // There's another description list behind this one; merge the current one into that
             foreach ($node->children() as $child) {
-                $prev->appendChild($child);
+                $prev->append_child($child);
             }
-
             $node->detach();
         }
     }

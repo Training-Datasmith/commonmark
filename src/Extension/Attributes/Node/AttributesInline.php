@@ -9,48 +9,39 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace League\Common_Mark\Extension\Attributes\Node;
 
-declare(strict_types=1);
-
-namespace League\CommonMark\Extension\Attributes\Node;
-
-use League\CommonMark\Node\Inline\AbstractInline;
-
-final class AttributesInline extends AbstractInline
+use League\Common_Mark\Node\Inline\Abstract_Inline;
+final class Attributes_Inline extends Abstract_Inline
 {
     /** @var array<string, mixed> */
     private array $attributes;
-
     private bool $block;
-
     /**
      * @param array<string, mixed> $attributes
      */
     public function __construct(array $attributes, bool $block)
     {
         parent::__construct();
-
         $this->attributes = $attributes;
-        $this->block      = $block;
+        $this->block = $block;
     }
-
     /**
      * @return array<string, mixed>
      */
-    public function getAttributes(): array
+    public function get_attributes(): array
     {
         return $this->attributes;
     }
-
     /**
      * @param array<string, mixed> $attributes
      */
-    public function setAttributes(array $attributes): void
+    public function set_attributes(array $attributes): void
     {
         $this->attributes = $attributes;
     }
-
-    public function isBlock(): bool
+    public function is_block(): bool
     {
         return $this->block;
     }

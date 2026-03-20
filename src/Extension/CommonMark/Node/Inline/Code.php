@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,11 +12,9 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Common_Mark\Node\Inline;
 
-namespace League\CommonMark\Extension\CommonMark\Node\Inline;
-
-use League\CommonMark\Node\Inline\AbstractStringContainer;
-
-class Code extends AbstractStringContainer
+use League\Common_Mark\Node\Inline\Abstract_String_Container;
+class Code extends Abstract_String_Container
 {
 }

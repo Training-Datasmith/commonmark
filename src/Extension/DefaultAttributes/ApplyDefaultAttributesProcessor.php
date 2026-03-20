@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,55 +9,47 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Default_Attributes;
 
-namespace League\CommonMark\Extension\DefaultAttributes;
-
-use League\CommonMark\Event\DocumentParsedEvent;
-use League\CommonMark\Extension\Attributes\Util\AttributesHelper;
-use League\Config\ConfigurationAwareInterface;
-use League\Config\ConfigurationInterface;
-
-final class ApplyDefaultAttributesProcessor implements ConfigurationAwareInterface
+use League\Common_Mark\Event\Document_Parsed_Event;
+use League\Common_Mark\Extension\Attributes\Util\Attributes_Helper;
+use League\Config\Configuration_Aware_Interface;
+use League\Config\Configuration_Interface;
+final class Apply_Default_Attributes_Processor implements Configuration_Aware_Interface
 {
-    private ConfigurationInterface $config;
-
-    public function onDocumentParsed(DocumentParsedEvent $event): void
+    private Configuration_Interface $config;
+    public function on_document_parsed(Document_Parsed_Event $event): void
     {
         /** @var array<string, array<string, mixed>> $map */
         $map = $this->config->get('default_attributes');
-
         // Don't bother iterating if no default attributes are configured
-        if (! $map) {
+        if (!$map) {
             return;
         }
-
-        foreach ($event->getDocument()->iterator() as $node) {
+        foreach ($event->get_document()->iterator() as $node) {
             // Check to see if any default attributes were defined
-            if (($attributesToApply = $map[\get_class($node)] ?? []) === []) {
+            if (($attributes_to_apply = $map[\get_class($node)] ?? []) === []) {
                 continue;
             }
-
-            $newAttributes = [];
-            foreach ($attributesToApply as $name => $value) {
+            $new_attributes = [];
+            foreach ($attributes_to_apply as $name => $value) {
                 if (\is_callable($value)) {
                     $value = $value($node);
                     // Callables are allowed to return `null` indicating that no changes should be made
                     if ($value !== null) {
-                        $newAttributes[$name] = $value;
+                        $new_attributes[$name] = $value;
                     }
                 } else {
-                    $newAttributes[$name] = $value;
+                    $new_attributes[$name] = $value;
                 }
             }
-
             // Merge these attributes into the node
-            if (\count($newAttributes) > 0) {
-                $node->data->set('attributes', AttributesHelper::mergeAttributes($node, $newAttributes));
+            if (\count($new_attributes) > 0) {
+                $node->data->set('attributes', Attributes_Helper::merge_attributes($node, $new_attributes));
             }
         }
     }
-
-    public function setConfiguration(ConfigurationInterface $configuration): void
+    public function set_configuration(Configuration_Interface $configuration): void
     {
         $this->config = $configuration;
     }

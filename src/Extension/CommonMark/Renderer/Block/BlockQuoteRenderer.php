@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,17 +12,15 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Common_Mark\Renderer\Block;
 
-namespace League\CommonMark\Extension\CommonMark\Renderer\Block;
-
-use League\CommonMark\Extension\CommonMark\Node\Block\BlockQuote;
-use League\CommonMark\Node\Node;
-use League\CommonMark\Renderer\ChildNodeRendererInterface;
-use League\CommonMark\Renderer\NodeRendererInterface;
-use League\CommonMark\Util\HtmlElement;
-use League\CommonMark\Xml\XmlNodeRendererInterface;
-
-final class BlockQuoteRenderer implements NodeRendererInterface, XmlNodeRendererInterface
+use League\Common_Mark\Extension\Common_Mark\Node\Block\Block_Quote;
+use League\Common_Mark\Node\Node;
+use League\Common_Mark\Renderer\Child_Node_Renderer_Interface;
+use League\Common_Mark\Renderer\Node_Renderer_Interface;
+use League\Common_Mark\Util\Html_Element;
+use League\Common_Mark\Xml\Xml_Node_Renderer_Interface;
+final class Block_Quote_Renderer implements Node_Renderer_Interface, Xml_Node_Renderer_Interface
 {
     /**
      * @param BlockQuote $node
@@ -32,30 +29,21 @@ final class BlockQuoteRenderer implements NodeRendererInterface, XmlNodeRenderer
      *
      * @psalm-suppress MoreSpecificImplementedParamType
      */
-    public function render(Node $node, ChildNodeRendererInterface $childRenderer): \Stringable
+    public function render(Node $node, Child_Node_Renderer_Interface $child_renderer): \Stringable
     {
-        BlockQuote::assertInstanceOf($node);
-
+        Block_Quote::assert_instance_of($node);
         $attrs = $node->data->get('attributes');
-
-        $filling        = $childRenderer->renderNodes($node->children());
-        $innerSeparator = $childRenderer->getInnerSeparator();
+        $filling = $child_renderer->render_nodes($node->children());
+        $inner_separator = $child_renderer->get_inner_separator();
         if ($filling === '') {
-            return new HtmlElement('blockquote', $attrs, $innerSeparator);
+            return new Html_Element('blockquote', $attrs, $inner_separator);
         }
-
-        return new HtmlElement(
-            'blockquote',
-            $attrs,
-            $innerSeparator . $filling . $innerSeparator
-        );
+        return new Html_Element('blockquote', $attrs, $inner_separator . $filling . $inner_separator);
     }
-
-    public function getXmlTagName(Node $node): string
+    public function get_xml_tag_name(Node $node): string
     {
         return 'block_quote';
     }
-
     /**
      * @param BlockQuote $node
      *
@@ -63,7 +51,7 @@ final class BlockQuoteRenderer implements NodeRendererInterface, XmlNodeRenderer
      *
      * @psalm-suppress MoreSpecificImplementedParamType
      */
-    public function getXmlAttributes(Node $node): array
+    public function get_xml_attributes(Node $node): array
     {
         return [];
     }

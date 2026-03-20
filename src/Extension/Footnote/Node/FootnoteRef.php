@@ -9,48 +9,38 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace League\Common_Mark\Extension\Footnote\Node;
 
-declare(strict_types=1);
-
-namespace League\CommonMark\Extension\Footnote\Node;
-
-use League\CommonMark\Node\Inline\AbstractInline;
-use League\CommonMark\Reference\ReferenceableInterface;
-use League\CommonMark\Reference\ReferenceInterface;
-
-final class FootnoteRef extends AbstractInline implements ReferenceableInterface
+use League\Common_Mark\Node\Inline\Abstract_Inline;
+use League\Common_Mark\Reference\Referenceable_Interface;
+use League\Common_Mark\Reference\Reference_Interface;
+final class Footnote_Ref extends Abstract_Inline implements Referenceable_Interface
 {
-    private ReferenceInterface $reference;
-
+    private Reference_Interface $reference;
     /** @psalm-readonly */
     private ?string $content = null;
-
     /**
      * @param array<mixed> $data
      */
-    public function __construct(ReferenceInterface $reference, ?string $content = null, array $data = [])
+    public function __construct(Reference_Interface $reference, ?string $content = null, array $data = [])
     {
         parent::__construct();
-
         $this->reference = $reference;
-        $this->content   = $content;
-
+        $this->content = $content;
         if (\count($data) > 0) {
             $this->data->import($data);
         }
     }
-
-    public function getReference(): ReferenceInterface
+    public function get_reference(): Reference_Interface
     {
         return $this->reference;
     }
-
-    public function setReference(ReferenceInterface $reference): void
+    public function set_reference(Reference_Interface $reference): void
     {
         $this->reference = $reference;
     }
-
-    public function getContent(): ?string
+    public function get_content(): ?string
     {
         return $this->content;
     }

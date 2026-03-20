@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,26 +12,22 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Smart_Punct;
 
-namespace League\CommonMark\Extension\SmartPunct;
-
-use League\CommonMark\Node\Inline\Text;
-use League\CommonMark\Parser\Inline\InlineParserInterface;
-use League\CommonMark\Parser\Inline\InlineParserMatch;
-use League\CommonMark\Parser\InlineParserContext;
-
-final class EllipsesParser implements InlineParserInterface
+use League\Common_Mark\Node\Inline\Text;
+use League\Common_Mark\Parser\Inline\Inline_Parser_Interface;
+use League\Common_Mark\Parser\Inline\Inline_Parser_Match;
+use League\Common_Mark\Parser\Inline_Parser_Context;
+final class Ellipses_Parser implements Inline_Parser_Interface
 {
-    public function getMatchDefinition(): InlineParserMatch
+    public function get_match_definition(): Inline_Parser_Match
     {
-        return InlineParserMatch::oneOf('...', '. . .');
+        return Inline_Parser_Match::one_of('...', '. . .');
     }
-
-    public function parse(InlineParserContext $inlineContext): bool
+    public function parse(Inline_Parser_Context $inline_context): bool
     {
-        $inlineContext->getCursor()->advanceBy($inlineContext->getFullMatchLength());
-        $inlineContext->getContainer()->appendChild(new Text('…'));
-
+        $inline_context->get_cursor()->advance_by($inline_context->get_full_match_length());
+        $inline_context->get_container()->append_child(new Text('…'));
         return true;
     }
 }

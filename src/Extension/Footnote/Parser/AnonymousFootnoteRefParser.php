@@ -9,58 +9,43 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace League\Common_Mark\Extension\Footnote\Parser;
 
-declare(strict_types=1);
-
-namespace League\CommonMark\Extension\Footnote\Parser;
-
-use League\CommonMark\Environment\EnvironmentAwareInterface;
-use League\CommonMark\Environment\EnvironmentInterface;
-use League\CommonMark\Extension\Footnote\Node\FootnoteRef;
-use League\CommonMark\Normalizer\TextNormalizerInterface;
-use League\CommonMark\Parser\Inline\InlineParserInterface;
-use League\CommonMark\Parser\Inline\InlineParserMatch;
-use League\CommonMark\Parser\InlineParserContext;
-use League\CommonMark\Reference\Reference;
-use League\Config\ConfigurationInterface;
-
-final class AnonymousFootnoteRefParser implements InlineParserInterface, EnvironmentAwareInterface
+use League\Common_Mark\Environment\Environment_Aware_Interface;
+use League\Common_Mark\Environment\Environment_Interface;
+use League\Common_Mark\Extension\Footnote\Node\Footnote_Ref;
+use League\Common_Mark\Normalizer\Text_Normalizer_Interface;
+use League\Common_Mark\Parser\Inline\Inline_Parser_Interface;
+use League\Common_Mark\Parser\Inline\Inline_Parser_Match;
+use League\Common_Mark\Parser\Inline_Parser_Context;
+use League\Common_Mark\Reference\Reference;
+use League\Config\Configuration_Interface;
+final class Anonymous_Footnote_Ref_Parser implements Inline_Parser_Interface, Environment_Aware_Interface
 {
-    private ConfigurationInterface $config;
-
+    private Configuration_Interface $config;
     /** @psalm-readonly-allow-private-mutation */
-    private TextNormalizerInterface $slugNormalizer;
-
-    public function getMatchDefinition(): InlineParserMatch
+    private Text_Normalizer_Interface $slug_normalizer;
+    public function get_match_definition(): Inline_Parser_Match
     {
-        return InlineParserMatch::regex('\^\[([^\]]+)\]');
+        return Inline_Parser_Match::regex('\^\[([^\]]+)\]');
     }
-
-    public function parse(InlineParserContext $inlineContext): bool
+    public function parse(Inline_Parser_Context $inline_context): bool
     {
-        $inlineContext->getCursor()->advanceBy($inlineContext->getFullMatchLength());
-
-        [$label]   = $inlineContext->getSubMatches();
-        $reference = $this->createReference($label);
-        $inlineContext->getContainer()->appendChild(new FootnoteRef($reference, $label));
-
+        $inline_context->get_cursor()->advance_by($inline_context->get_full_match_length());
+        [$label] = $inline_context->get_sub_matches();
+        $reference = $this->create_reference($label);
+        $inline_context->get_container()->append_child(new Footnote_Ref($reference, $label));
         return true;
     }
-
-    private function createReference(string $label): Reference
+    private function create_reference(string $label): Reference
     {
-        $refLabel = $this->slugNormalizer->normalize($label, ['length' => 20]);
-
-        return new Reference(
-            $refLabel,
-            '#' . $this->config->get('footnote/footnote_id_prefix') . $refLabel,
-            $label
-        );
+        $ref_label = $this->slug_normalizer->normalize($label, ['length' => 20]);
+        return new Reference($ref_label, '#' . $this->config->get('footnote/footnote_id_prefix') . $ref_label, $label);
     }
-
-    public function setEnvironment(EnvironmentInterface $environment): void
+    public function set_environment(Environment_Interface $environment): void
     {
-        $this->config         = $environment->getConfiguration();
-        $this->slugNormalizer = $environment->getSlugNormalizer();
+        $this->config = $environment->get_configuration();
+        $this->slug_normalizer = $environment->get_slug_normalizer();
     }
 }

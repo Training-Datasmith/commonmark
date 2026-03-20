@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,42 +9,36 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Embed;
 
-namespace League\CommonMark\Extension\Embed;
-
-class DomainFilteringAdapter implements EmbedAdapterInterface
+class Domain_Filtering_Adapter implements Embed_Adapter_Interface
 {
-    private EmbedAdapterInterface $decorated;
-
+    private Embed_Adapter_Interface $decorated;
     /** @psalm-var non-empty-string */
     private string $regex;
-
     /**
      * @param string[] $allowedDomains
      */
-    public function __construct(EmbedAdapterInterface $decorated, array $allowedDomains)
+    public function __construct(Embed_Adapter_Interface $decorated, array $allowed_domains)
     {
         $this->decorated = $decorated;
-        $this->regex     = self::createRegex($allowedDomains);
+        $this->regex = self::create_regex($allowed_domains);
     }
-
     /**
      * {@inheritDoc}
      */
-    public function updateEmbeds(array $embeds): void
+    public function update_embeds(array $embeds): void
     {
-        $this->decorated->updateEmbeds(\array_values(\array_filter($embeds, fn (Embed $embed): bool => \preg_match($this->regex, $embed->getUrl()) === 1)));
+        $this->decorated->update_embeds(\array_values(\array_filter($embeds, fn(Embed $embed): bool => \preg_match($this->regex, $embed->get_url()) === 1)));
     }
-
     /**
      * @param string[] $allowedDomains
      *
      * @psalm-return non-empty-string
      */
-    private static function createRegex(array $allowedDomains): string
+    private static function create_regex(array $allowed_domains): string
     {
-        $allowedDomains = \array_map('preg_quote', $allowedDomains);
-
-        return '/^(?:https?:\/\/)?(?:[^.]+\.)*(' . \implode('|', $allowedDomains) . ')/';
+        $allowed_domains = \array_map('preg_quote', $allowed_domains);
+        return '/^(?:https?:\/\/)?(?:[^.]+\.)*(' . \implode('|', $allowed_domains) . ')/';
     }
 }

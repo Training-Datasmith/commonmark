@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,13 +12,11 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Delimiter\Processor;
 
-namespace League\CommonMark\Delimiter\Processor;
-
-use League\CommonMark\Delimiter\DelimiterInterface;
-use League\CommonMark\Exception\InvalidArgumentException;
-use League\CommonMark\Node\Inline\AbstractStringContainer;
-
+use League\Common_Mark\Delimiter\Delimiter_Interface;
+use League\Common_Mark\Exception\InvalidArgumentException;
+use League\Common_Mark\Node\Inline\Abstract_String_Container;
 /**
  * An implementation of DelimiterProcessorInterface that dispatches all calls to two or more other DelimiterProcessors
  * depending on the length of the delimiter run. All child DelimiterProcessors must have different minimum
@@ -28,84 +25,70 @@ use League\CommonMark\Node\Inline\AbstractStringContainer;
  *
  * @internal
  */
-final class StaggeredDelimiterProcessor implements DelimiterProcessorInterface
+final class Staggered_Delimiter_Processor implements Delimiter_Processor_Interface
 {
     /** @psalm-readonly */
-    private string $delimiterChar;
-
+    private string $delimiter_char;
     /** @psalm-readonly-allow-private-mutation */
-    private int $minLength = 0;
-
+    private int $min_length = 0;
     /**
      * @var array<int, DelimiterProcessorInterface>|DelimiterProcessorInterface[]
      *
      * @psalm-readonly-allow-private-mutation
      */
-    private array $processors = []; // keyed by minLength in reverse order
-
-    public function __construct(string $char, DelimiterProcessorInterface $processor)
+    private array $processors = [];
+    // keyed by minLength in reverse order
+    public function __construct(string $char, Delimiter_Processor_Interface $processor)
     {
-        $this->delimiterChar = $char;
+        $this->delimiter_char = $char;
         $this->add($processor);
     }
-
-    public function getOpeningCharacter(): string
+    public function get_opening_character(): string
     {
-        return $this->delimiterChar;
+        return $this->delimiter_char;
     }
-
-    public function getClosingCharacter(): string
+    public function get_closing_character(): string
     {
-        return $this->delimiterChar;
+        return $this->delimiter_char;
     }
-
-    public function getMinLength(): int
+    public function get_min_length(): int
     {
-        return $this->minLength;
+        return $this->min_length;
     }
-
     /**
      * Adds the given processor to this staggered delimiter processor
      *
      * @throws InvalidArgumentException if attempting to add another processors for the same character and minimum length
      */
-    public function add(DelimiterProcessorInterface $processor): void
+    public function add(Delimiter_Processor_Interface $processor): void
     {
-        $len = $processor->getMinLength();
-
+        $len = $processor->get_min_length();
         if (isset($this->processors[$len])) {
-            throw new InvalidArgumentException(\sprintf('Cannot add two delimiter processors for char "%s" and minimum length %d', $this->delimiterChar, $len));
+            throw new InvalidArgumentException(\sprintf('Cannot add two delimiter processors for char "%s" and minimum length %d', $this->delimiter_char, $len));
         }
-
         $this->processors[$len] = $processor;
         \krsort($this->processors);
-
-        $this->minLength = \min($this->minLength, $len);
+        $this->min_length = \min($this->min_length, $len);
     }
-
-    public function getDelimiterUse(DelimiterInterface $opener, DelimiterInterface $closer): int
+    public function get_delimiter_use(Delimiter_Interface $opener, Delimiter_Interface $closer): int
     {
-        return $this->findProcessor($opener->getLength())->getDelimiterUse($opener, $closer);
+        return $this->find_processor($opener->get_length())->get_delimiter_use($opener, $closer);
     }
-
-    public function process(AbstractStringContainer $opener, AbstractStringContainer $closer, int $delimiterUse): void
+    public function process(Abstract_String_Container $opener, Abstract_String_Container $closer, int $delimiter_use): void
     {
-        $this->findProcessor($delimiterUse)->process($opener, $closer, $delimiterUse);
+        $this->find_processor($delimiter_use)->process($opener, $closer, $delimiter_use);
     }
-
-    private function findProcessor(int $len): DelimiterProcessorInterface
+    private function find_processor(int $len): Delimiter_Processor_Interface
     {
         // Find the "longest" processor which can handle this length
         foreach ($this->processors as $processor) {
-            if ($processor->getMinLength() <= $len) {
+            if ($processor->get_min_length() <= $len) {
                 return $processor;
             }
         }
-
         // Just use the first one in our list
         $first = \reset($this->processors);
-        \assert($first instanceof DelimiterProcessorInterface);
-
+        \assert($first instanceof Delimiter_Processor_Interface);
         return $first;
     }
 }

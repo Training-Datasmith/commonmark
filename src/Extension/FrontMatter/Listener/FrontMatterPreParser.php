@@ -8,30 +8,23 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace League\Common_Mark\Extension\Front_Matter\Listener;
 
-declare(strict_types=1);
-
-namespace League\CommonMark\Extension\FrontMatter\Listener;
-
-use League\CommonMark\Event\DocumentPreParsedEvent;
-use League\CommonMark\Extension\FrontMatter\FrontMatterParserInterface;
-
-final class FrontMatterPreParser
+use League\Common_Mark\Event\Document_Pre_Parsed_Event;
+use League\Common_Mark\Extension\Front_Matter\Front_Matter_Parser_Interface;
+final class Front_Matter_Pre_Parser
 {
-    private FrontMatterParserInterface $parser;
-
-    public function __construct(FrontMatterParserInterface $parser)
+    private Front_Matter_Parser_Interface $parser;
+    public function __construct(Front_Matter_Parser_Interface $parser)
     {
         $this->parser = $parser;
     }
-
-    public function __invoke(DocumentPreParsedEvent $event): void
+    public function __invoke(Document_Pre_Parsed_Event $event): void
     {
-        $content = $event->getMarkdown()->getContent();
-
+        $content = $event->get_markdown()->get_content();
         $parsed = $this->parser->parse($content);
-
-        $event->getDocument()->data->set('front_matter', $parsed->getFrontMatter());
-        $event->replaceMarkdown($parsed);
+        $event->get_document()->data->set('front_matter', $parsed->get_front_matter());
+        $event->replace_markdown($parsed);
     }
 }

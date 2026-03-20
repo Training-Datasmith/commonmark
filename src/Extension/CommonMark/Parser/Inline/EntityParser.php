@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,30 +12,25 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Common_Mark\Parser\Inline;
 
-namespace League\CommonMark\Extension\CommonMark\Parser\Inline;
-
-use League\CommonMark\Node\Inline\Text;
-use League\CommonMark\Parser\Inline\InlineParserInterface;
-use League\CommonMark\Parser\Inline\InlineParserMatch;
-use League\CommonMark\Parser\InlineParserContext;
-use League\CommonMark\Util\Html5EntityDecoder;
-use League\CommonMark\Util\RegexHelper;
-
-final class EntityParser implements InlineParserInterface
+use League\Common_Mark\Node\Inline\Text;
+use League\Common_Mark\Parser\Inline\Inline_Parser_Interface;
+use League\Common_Mark\Parser\Inline\Inline_Parser_Match;
+use League\Common_Mark\Parser\Inline_Parser_Context;
+use League\Common_Mark\Util\Html5entity_Decoder;
+use League\Common_Mark\Util\Regex_Helper;
+final class Entity_Parser implements Inline_Parser_Interface
 {
-    public function getMatchDefinition(): InlineParserMatch
+    public function get_match_definition(): Inline_Parser_Match
     {
-        return InlineParserMatch::regex(RegexHelper::PARTIAL_ENTITY);
+        return Inline_Parser_Match::regex(Regex_Helper::PARTIAL_ENTITY);
     }
-
-    public function parse(InlineParserContext $inlineContext): bool
+    public function parse(Inline_Parser_Context $inline_context): bool
     {
-        $entity = $inlineContext->getFullMatch();
-
-        $inlineContext->getCursor()->advanceBy($inlineContext->getFullMatchLength());
-        $inlineContext->getContainer()->appendChild(new Text(Html5EntityDecoder::decode($entity)));
-
+        $entity = $inline_context->get_full_match();
+        $inline_context->get_cursor()->advance_by($inline_context->get_full_match_length());
+        $inline_context->get_container()->append_child(new Text(Html5entity_Decoder::decode($entity)));
         return true;
     }
 }

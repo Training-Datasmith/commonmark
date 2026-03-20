@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,17 +9,15 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Front_Matter\Data;
 
-namespace League\CommonMark\Extension\FrontMatter\Data;
-
-use League\CommonMark\Extension\FrontMatter\Exception\InvalidFrontMatterException;
-
-interface FrontMatterDataParserInterface
+use League\Common_Mark\Extension\Front_Matter\Exception\Invalid_Front_Matter_Exception;
+interface Front_Matter_Data_Parser_Interface
 {
     /**
      * @return mixed|null The parsed data (which may be null, if the input represents a null value)
      *
      * @throws InvalidFrontMatterException if parsing fails
      */
-    public function parse(string $frontMatter);
+    public function parse(string $front_matter);
 }

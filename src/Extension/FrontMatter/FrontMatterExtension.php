@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,37 +9,32 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Front_Matter;
 
-namespace League\CommonMark\Extension\FrontMatter;
-
-use League\CommonMark\Environment\EnvironmentBuilderInterface;
-use League\CommonMark\Event\DocumentPreParsedEvent;
-use League\CommonMark\Event\DocumentRenderedEvent;
-use League\CommonMark\Extension\ExtensionInterface;
-use League\CommonMark\Extension\FrontMatter\Data\FrontMatterDataParserInterface;
-use League\CommonMark\Extension\FrontMatter\Data\LibYamlFrontMatterParser;
-use League\CommonMark\Extension\FrontMatter\Data\SymfonyYamlFrontMatterParser;
-use League\CommonMark\Extension\FrontMatter\Listener\FrontMatterPostRenderListener;
-use League\CommonMark\Extension\FrontMatter\Listener\FrontMatterPreParser;
-
-final class FrontMatterExtension implements ExtensionInterface
+use League\Common_Mark\Environment\Environment_Builder_Interface;
+use League\Common_Mark\Event\Document_Pre_Parsed_Event;
+use League\Common_Mark\Event\Document_Rendered_Event;
+use League\Common_Mark\Extension\Extension_Interface;
+use League\Common_Mark\Extension\Front_Matter\Data\Front_Matter_Data_Parser_Interface;
+use League\Common_Mark\Extension\Front_Matter\Data\Lib_Yaml_Front_Matter_Parser;
+use League\Common_Mark\Extension\Front_Matter\Data\Symfony_Yaml_Front_Matter_Parser;
+use League\Common_Mark\Extension\Front_Matter\Listener\Front_Matter_Post_Render_Listener;
+use League\Common_Mark\Extension\Front_Matter\Listener\Front_Matter_Pre_Parser;
+final class Front_Matter_Extension implements Extension_Interface
 {
     /** @psalm-readonly */
-    private FrontMatterParserInterface $frontMatterParser;
-
-    public function __construct(?FrontMatterDataParserInterface $dataParser = null)
+    private Front_Matter_Parser_Interface $front_matter_parser;
+    public function __construct(?Front_Matter_Data_Parser_Interface $data_parser = null)
     {
-        $this->frontMatterParser = new FrontMatterParser($dataParser ?? LibYamlFrontMatterParser::capable() ?? new SymfonyYamlFrontMatterParser());
+        $this->front_matter_parser = new Front_Matter_Parser($data_parser ?? Lib_Yaml_Front_Matter_Parser::capable() ?? new Symfony_Yaml_Front_Matter_Parser());
     }
-
-    public function getFrontMatterParser(): FrontMatterParserInterface
+    public function get_front_matter_parser(): Front_Matter_Parser_Interface
     {
-        return $this->frontMatterParser;
+        return $this->front_matter_parser;
     }
-
-    public function register(EnvironmentBuilderInterface $environment): void
+    public function register(Environment_Builder_Interface $environment): void
     {
-        $environment->addEventListener(DocumentPreParsedEvent::class, new FrontMatterPreParser($this->frontMatterParser));
-        $environment->addEventListener(DocumentRenderedEvent::class, new FrontMatterPostRenderListener(), -500);
+        $environment->add_event_listener(Document_Pre_Parsed_Event::class, new Front_Matter_Pre_Parser($this->front_matter_parser));
+        $environment->add_event_listener(Document_Rendered_Event::class, new Front_Matter_Post_Render_Listener(), -500);
     }
 }

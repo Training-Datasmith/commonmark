@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,18 +12,15 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Smart_Punct;
 
-namespace League\CommonMark\Extension\SmartPunct;
-
-use League\CommonMark\Node\Inline\AbstractStringContainer;
-
-final class Quote extends AbstractStringContainer
+use League\Common_Mark\Node\Inline\Abstract_String_Container;
+final class Quote extends Abstract_String_Container
 {
-    public const DOUBLE_QUOTE        = '"';
+    public const DOUBLE_QUOTE = '"';
     public const DOUBLE_QUOTE_OPENER = '“';
     public const DOUBLE_QUOTE_CLOSER = '”';
-
-    public const SINGLE_QUOTE        = "'";
+    public const SINGLE_QUOTE = "'";
     public const SINGLE_QUOTE_OPENER = '‘';
     public const SINGLE_QUOTE_CLOSER = '’';
 }

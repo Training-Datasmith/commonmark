@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,78 +9,59 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Mention;
 
-namespace League\CommonMark\Extension\Mention;
-
-use League\CommonMark\Extension\Mention\Generator\CallbackGenerator;
-use League\CommonMark\Extension\Mention\Generator\MentionGeneratorInterface;
-use League\CommonMark\Extension\Mention\Generator\StringTemplateLinkGenerator;
-use League\CommonMark\Parser\Inline\InlineParserInterface;
-use League\CommonMark\Parser\Inline\InlineParserMatch;
-use League\CommonMark\Parser\InlineParserContext;
-
-final class MentionParser implements InlineParserInterface
+use League\Common_Mark\Extension\Mention\Generator\Callback_Generator;
+use League\Common_Mark\Extension\Mention\Generator\Mention_Generator_Interface;
+use League\Common_Mark\Extension\Mention\Generator\String_Template_Link_Generator;
+use League\Common_Mark\Parser\Inline\Inline_Parser_Interface;
+use League\Common_Mark\Parser\Inline\Inline_Parser_Match;
+use League\Common_Mark\Parser\Inline_Parser_Context;
+final class Mention_Parser implements Inline_Parser_Interface
 {
     /** @psalm-readonly */
     private string $name;
-
     /** @psalm-readonly */
     private string $prefix;
-
     /** @psalm-readonly */
-    private string $identifierPattern;
-
+    private string $identifier_pattern;
     /** @psalm-readonly */
-    private MentionGeneratorInterface $mentionGenerator;
-
-    public function __construct(string $name, string $prefix, string $identifierPattern, MentionGeneratorInterface $mentionGenerator)
+    private Mention_Generator_Interface $mention_generator;
+    public function __construct(string $name, string $prefix, string $identifier_pattern, Mention_Generator_Interface $mention_generator)
     {
-        $this->name              = $name;
-        $this->prefix            = $prefix;
-        $this->identifierPattern = $identifierPattern;
-        $this->mentionGenerator  = $mentionGenerator;
+        $this->name = $name;
+        $this->prefix = $prefix;
+        $this->identifier_pattern = $identifier_pattern;
+        $this->mention_generator = $mention_generator;
     }
-
-    public function getMatchDefinition(): InlineParserMatch
+    public function get_match_definition(): Inline_Parser_Match
     {
-        return InlineParserMatch::join(
-            InlineParserMatch::string($this->prefix),
-            InlineParserMatch::regex($this->identifierPattern)
-        );
+        return Inline_Parser_Match::join(Inline_Parser_Match::string($this->prefix), Inline_Parser_Match::regex($this->identifier_pattern));
     }
-
-    public function parse(InlineParserContext $inlineContext): bool
+    public function parse(Inline_Parser_Context $inline_context): bool
     {
-        $cursor = $inlineContext->getCursor();
-
+        $cursor = $inline_context->get_cursor();
         // The prefix must not have any other characters immediately prior
-        $previousChar = $cursor->peek(-1);
-        if ($previousChar !== null && \preg_match('/\w/', $previousChar)) {
+        $previous_char = $cursor->peek(-1);
+        if ($previous_char !== null && \preg_match('/\w/', $previous_char)) {
             // peek() doesn't modify the cursor, so no need to restore state first
             return false;
         }
-
-        [$prefix, $identifier] = $inlineContext->getSubMatches();
-
-        $mention = $this->mentionGenerator->generateMention(new Mention($this->name, $prefix, $identifier));
-
+        [$prefix, $identifier] = $inline_context->get_sub_matches();
+        $mention = $this->mention_generator->generate_mention(new Mention($this->name, $prefix, $identifier));
         if ($mention === null) {
             return false;
         }
-
-        $cursor->advanceBy($inlineContext->getFullMatchLength());
-        $inlineContext->getContainer()->appendChild($mention);
-
+        $cursor->advance_by($inline_context->get_full_match_length());
+        $inline_context->get_container()->append_child($mention);
         return true;
     }
-
-    public static function createWithStringTemplate(string $name, string $prefix, string $mentionRegex, string $urlTemplate): MentionParser
+    public static function create_with_string_template(string $name, string $prefix, string $mention_regex, string $url_template): Mention_Parser
     {
-        return new self($name, $prefix, $mentionRegex, new StringTemplateLinkGenerator($urlTemplate));
+        return new self($name, $prefix, $mention_regex, new String_Template_Link_Generator($url_template));
     }
-
-    public static function createWithCallback(string $name, string $prefix, string $mentionRegex, callable $callback): MentionParser
+    public static function create_with_callback(string $name, string $prefix, string $mention_regex, callable $callback): Mention_Parser
     {
-        return new self($name, $prefix, $mentionRegex, new CallbackGenerator($callback));
+        return new self($name, $prefix, $mention_regex, new Callback_Generator($callback));
     }
 }

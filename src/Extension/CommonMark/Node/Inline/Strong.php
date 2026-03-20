@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,29 +12,23 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Common_Mark\Node\Inline;
 
-namespace League\CommonMark\Extension\CommonMark\Node\Inline;
-
-use League\CommonMark\Node\Inline\AbstractInline;
-use League\CommonMark\Node\Inline\DelimitedInterface;
-
-final class Strong extends AbstractInline implements DelimitedInterface
+use League\Common_Mark\Node\Inline\Abstract_Inline;
+use League\Common_Mark\Node\Inline\Delimited_Interface;
+final class Strong extends Abstract_Inline implements Delimited_Interface
 {
     private string $delimiter;
-
     public function __construct(string $delimiter = '**')
     {
         parent::__construct();
-
         $this->delimiter = $delimiter;
     }
-
-    public function getOpeningDelimiter(): string
+    public function get_opening_delimiter(): string
     {
         return $this->delimiter;
     }
-
-    public function getClosingDelimiter(): string
+    public function get_closing_delimiter(): string
     {
         return $this->delimiter;
     }

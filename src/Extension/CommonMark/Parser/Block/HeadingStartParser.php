@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,71 +9,56 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Common_Mark\Parser\Block;
 
-namespace League\CommonMark\Extension\CommonMark\Parser\Block;
-
-use League\CommonMark\Parser\Block\BlockStart;
-use League\CommonMark\Parser\Block\BlockStartParserInterface;
-use League\CommonMark\Parser\Cursor;
-use League\CommonMark\Parser\MarkdownParserStateInterface;
-use League\CommonMark\Util\RegexHelper;
-
-class HeadingStartParser implements BlockStartParserInterface
+use League\Common_Mark\Parser\Block\Block_Start;
+use League\Common_Mark\Parser\Block\Block_Start_Parser_Interface;
+use League\Common_Mark\Parser\Cursor;
+use League\Common_Mark\Parser\Markdown_Parser_State_Interface;
+use League\Common_Mark\Util\Regex_Helper;
+class Heading_Start_Parser implements Block_Start_Parser_Interface
 {
-    public function tryStart(Cursor $cursor, MarkdownParserStateInterface $parserState): ?BlockStart
+    public function try_start(Cursor $cursor, Markdown_Parser_State_Interface $parser_state): ?Block_Start
     {
-        if ($cursor->isIndented() || ! \in_array($cursor->getNextNonSpaceCharacter(), ['#', '-', '='], true)) {
-            return BlockStart::none();
+        if ($cursor->is_indented() || !\in_array($cursor->get_next_non_space_character(), ['#', '-', '='], true)) {
+            return Block_Start::none();
         }
-
-        $cursor->advanceToNextNonSpaceOrTab();
-
-        if ($atxHeading = self::getAtxHeader($cursor)) {
-            return BlockStart::of($atxHeading)->at($cursor);
+        $cursor->advance_to_next_non_space_or_tab();
+        if ($atx_heading = self::get_atx_header($cursor)) {
+            return Block_Start::of($atx_heading)->at($cursor);
         }
-
-        $setextHeadingLevel = self::getSetextHeadingLevel($cursor);
-        if ($setextHeadingLevel > 0) {
-            $content = $parserState->getParagraphContent();
+        $setext_heading_level = self::get_setext_heading_level($cursor);
+        if ($setext_heading_level > 0) {
+            $content = $parser_state->get_paragraph_content();
             if ($content !== null) {
-                $cursor->advanceToEnd();
-
-                return BlockStart::of(new HeadingParser($setextHeadingLevel, $content))
-                    ->at($cursor)
-                    ->replaceActiveBlockParser();
+                $cursor->advance_to_end();
+                return Block_Start::of(new Heading_Parser($setext_heading_level, $content))->at($cursor)->replace_active_block_parser();
             }
         }
-
-        return BlockStart::none();
+        return Block_Start::none();
     }
-
-    private static function getAtxHeader(Cursor $cursor): ?HeadingParser
+    private static function get_atx_header(Cursor $cursor): ?Heading_Parser
     {
-        $match = RegexHelper::matchFirst('/^#{1,6}(?:[ \t]+|$)/', $cursor->getRemainder());
-        if (! $match) {
+        $match = Regex_Helper::match_first('/^#{1,6}(?:[ \t]+|$)/', $cursor->get_remainder());
+        if (!$match) {
             return null;
         }
-
-        $cursor->advanceToNextNonSpaceOrTab();
-        $cursor->advanceBy(\strlen($match[0]));
-
+        $cursor->advance_to_next_non_space_or_tab();
+        $cursor->advance_by(\strlen($match[0]));
         $level = \strlen(\trim($match[0]));
-        $str   = $cursor->getRemainder();
-        $str   = \preg_replace('/^[ \t]*#+[ \t]*$/', '', $str);
+        $str = $cursor->get_remainder();
+        $str = \preg_replace('/^[ \t]*#+[ \t]*$/', '', $str);
         \assert(\is_string($str));
         $str = \preg_replace('/[ \t]+#+[ \t]*$/', '', $str);
         \assert(\is_string($str));
-
-        return new HeadingParser($level, $str);
+        return new Heading_Parser($level, $str);
     }
-
-    private static function getSetextHeadingLevel(Cursor $cursor): int
+    private static function get_setext_heading_level(Cursor $cursor): int
     {
-        $match = RegexHelper::matchFirst('/^(?:=+|-+)[ \t]*$/', $cursor->getRemainder());
+        $match = Regex_Helper::match_first('/^(?:=+|-+)[ \t]*$/', $cursor->get_remainder());
         if ($match === null) {
             return 0;
         }
-
         return $match[0][0] === '=' ? 1 : 2;
     }
 }

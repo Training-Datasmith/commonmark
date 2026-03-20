@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -16,25 +15,21 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Common_Mark\Delimiter\Processor;
 
-namespace League\CommonMark\Extension\CommonMark\Delimiter\Processor;
-
-use League\CommonMark\Delimiter\DelimiterInterface;
-use League\CommonMark\Delimiter\Processor\CacheableDelimiterProcessorInterface;
-use League\CommonMark\Extension\CommonMark\Node\Inline\Emphasis;
-use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
-use League\CommonMark\Node\Inline\AbstractStringContainer;
-use League\Config\ConfigurationAwareInterface;
-use League\Config\ConfigurationInterface;
-
-final class EmphasisDelimiterProcessor implements CacheableDelimiterProcessorInterface, ConfigurationAwareInterface
+use League\Common_Mark\Delimiter\Delimiter_Interface;
+use League\Common_Mark\Delimiter\Processor\Cacheable_Delimiter_Processor_Interface;
+use League\Common_Mark\Extension\Common_Mark\Node\Inline\Emphasis;
+use League\Common_Mark\Extension\Common_Mark\Node\Inline\Strong;
+use League\Common_Mark\Node\Inline\Abstract_String_Container;
+use League\Config\Configuration_Aware_Interface;
+use League\Config\Configuration_Interface;
+final class Emphasis_Delimiter_Processor implements Cacheable_Delimiter_Processor_Interface, Configuration_Aware_Interface
 {
     /** @psalm-readonly */
     private string $char;
-
     /** @psalm-readonly-allow-private-mutation */
-    private ConfigurationInterface $config;
-
+    private Configuration_Interface $config;
     /**
      * @param string $char The emphasis character to use (typically '*' or '_')
      */
@@ -42,78 +37,59 @@ final class EmphasisDelimiterProcessor implements CacheableDelimiterProcessorInt
     {
         $this->char = $char;
     }
-
-    public function getOpeningCharacter(): string
+    public function get_opening_character(): string
     {
         return $this->char;
     }
-
-    public function getClosingCharacter(): string
+    public function get_closing_character(): string
     {
         return $this->char;
     }
-
-    public function getMinLength(): int
+    public function get_min_length(): int
     {
         return 1;
     }
-
-    public function getDelimiterUse(DelimiterInterface $opener, DelimiterInterface $closer): int
+    public function get_delimiter_use(Delimiter_Interface $opener, Delimiter_Interface $closer): int
     {
         // "Multiple of 3" rule for internal delimiter runs
-        if (($opener->canClose() || $closer->canOpen()) && $closer->getOriginalLength() % 3 !== 0 && ($opener->getOriginalLength() + $closer->getOriginalLength()) % 3 === 0) {
+        if (($opener->can_close() || $closer->can_open()) && $closer->get_original_length() % 3 !== 0 && ($opener->get_original_length() + $closer->get_original_length()) % 3 === 0) {
             return 0;
         }
-
         // Calculate actual number of delimiters used from this closer
-        if ($opener->getLength() >= 2 && $closer->getLength() >= 2) {
+        if ($opener->get_length() >= 2 && $closer->get_length() >= 2) {
             if ($this->config->get('commonmark/enable_strong')) {
                 return 2;
             }
-
             return 0;
         }
-
         if ($this->config->get('commonmark/enable_em')) {
             return 1;
         }
-
         return 0;
     }
-
-    public function process(AbstractStringContainer $opener, AbstractStringContainer $closer, int $delimiterUse): void
+    public function process(Abstract_String_Container $opener, Abstract_String_Container $closer, int $delimiter_use): void
     {
-        if ($delimiterUse === 1) {
+        if ($delimiter_use === 1) {
             $emphasis = new Emphasis($this->char);
-        } elseif ($delimiterUse === 2) {
+        } elseif ($delimiter_use === 2) {
             $emphasis = new Strong($this->char . $this->char);
         } else {
             return;
         }
-
         $next = $opener->next();
         while ($next !== null && $next !== $closer) {
             $tmp = $next->next();
-            $emphasis->appendChild($next);
+            $emphasis->append_child($next);
             $next = $tmp;
         }
-
-        $opener->insertAfter($emphasis);
+        $opener->insert_after($emphasis);
     }
-
-    public function setConfiguration(ConfigurationInterface $configuration): void
+    public function set_configuration(Configuration_Interface $configuration): void
     {
         $this->config = $configuration;
     }
-
-    public function getCacheKey(DelimiterInterface $closer): string
+    public function get_cache_key(Delimiter_Interface $closer): string
     {
-        return \sprintf(
-            '%s-%s-%d-%d',
-            $this->char,
-            $closer->canOpen() ? 'canOpen' : 'cannotOpen',
-            $closer->getOriginalLength() % 3,
-            $closer->getLength(),
-        );
+        return \sprintf('%s-%s-%d-%d', $this->char, $closer->can_open() ? 'canOpen' : 'cannotOpen', $closer->get_original_length() % 3, $closer->get_length());
     }
 }

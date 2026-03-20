@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,51 +9,42 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Common_Mark\Parser\Block;
 
-namespace League\CommonMark\Extension\CommonMark\Parser\Block;
-
-use League\CommonMark\Extension\CommonMark\Node\Block\BlockQuote;
-use League\CommonMark\Node\Block\AbstractBlock;
-use League\CommonMark\Parser\Block\AbstractBlockContinueParser;
-use League\CommonMark\Parser\Block\BlockContinue;
-use League\CommonMark\Parser\Block\BlockContinueParserInterface;
-use League\CommonMark\Parser\Cursor;
-
-final class BlockQuoteParser extends AbstractBlockContinueParser
+use League\Common_Mark\Extension\Common_Mark\Node\Block\Block_Quote;
+use League\Common_Mark\Node\Block\Abstract_Block;
+use League\Common_Mark\Parser\Block\Abstract_Block_Continue_Parser;
+use League\Common_Mark\Parser\Block\Block_Continue;
+use League\Common_Mark\Parser\Block\Block_Continue_Parser_Interface;
+use League\Common_Mark\Parser\Cursor;
+final class Block_Quote_Parser extends Abstract_Block_Continue_Parser
 {
     /** @psalm-readonly */
-    private BlockQuote $block;
-
+    private Block_Quote $block;
     public function __construct()
     {
-        $this->block = new BlockQuote();
+        $this->block = new Block_Quote();
     }
-
-    public function getBlock(): BlockQuote
+    public function get_block(): Block_Quote
     {
         return $this->block;
     }
-
-    public function isContainer(): bool
+    public function is_container(): bool
     {
         return true;
     }
-
-    public function canContain(AbstractBlock $childBlock): bool
+    public function can_contain(Abstract_Block $child_block): bool
     {
         return true;
     }
-
-    public function tryContinue(Cursor $cursor, BlockContinueParserInterface $activeBlockParser): ?BlockContinue
+    public function try_continue(Cursor $cursor, Block_Continue_Parser_Interface $active_block_parser): ?Block_Continue
     {
-        if (! $cursor->isIndented() && $cursor->getNextNonSpaceCharacter() === '>') {
-            $cursor->advanceToNextNonSpaceOrTab();
-            $cursor->advanceBy(1);
-            $cursor->advanceBySpaceOrTab();
-
-            return BlockContinue::at($cursor);
+        if (!$cursor->is_indented() && $cursor->get_next_non_space_character() === '>') {
+            $cursor->advance_to_next_non_space_or_tab();
+            $cursor->advance_by(1);
+            $cursor->advance_by_space_or_tab();
+            return Block_Continue::at($cursor);
         }
-
-        return BlockContinue::none();
+        return Block_Continue::none();
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,14 +9,12 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Embed;
 
-namespace League\CommonMark\Extension\Embed;
-
-use League\CommonMark\Node\Node;
-use League\CommonMark\Renderer\ChildNodeRendererInterface;
-use League\CommonMark\Renderer\NodeRendererInterface;
-
-class EmbedRenderer implements NodeRendererInterface
+use League\Common_Mark\Node\Node;
+use League\Common_Mark\Renderer\Child_Node_Renderer_Interface;
+use League\Common_Mark\Renderer\Node_Renderer_Interface;
+class Embed_Renderer implements Node_Renderer_Interface
 {
     /**
      * @param Embed $node
@@ -26,10 +23,9 @@ class EmbedRenderer implements NodeRendererInterface
      *
      * @psalm-suppress MoreSpecificImplementedParamType
      */
-    public function render(Node $node, ChildNodeRendererInterface $childRenderer)
+    public function render(Node $node, Child_Node_Renderer_Interface $child_renderer)
     {
-        Embed::assertInstanceOf($node);
-
-        return $node->getEmbedCode() ?? '';
+        Embed::assert_instance_of($node);
+        return $node->get_embed_code() ?? '';
     }
 }

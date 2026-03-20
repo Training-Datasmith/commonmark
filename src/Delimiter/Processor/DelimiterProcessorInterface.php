@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -16,24 +15,21 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Delimiter\Processor;
 
-namespace League\CommonMark\Delimiter\Processor;
-
-use League\CommonMark\Delimiter\DelimiterInterface;
-use League\CommonMark\Node\Inline\AbstractStringContainer;
-
+use League\Common_Mark\Delimiter\Delimiter_Interface;
+use League\Common_Mark\Node\Inline\Abstract_String_Container;
 /**
  * Interface for a delimiter processor
  */
-interface DelimiterProcessorInterface
+interface Delimiter_Processor_Interface
 {
     /**
      * Returns the character that marks the beginning of a delimited node.
      *
      * This must not clash with any other processors being added to the environment.
      */
-    public function getOpeningCharacter(): string;
-
+    public function get_opening_character(): string;
     /**
      * Returns the character that marks the ending of a delimited node.
      *
@@ -41,15 +37,13 @@ interface DelimiterProcessorInterface
      *
      * Note that for a symmetric delimiter such as "*", this is the same as the opening.
      */
-    public function getClosingCharacter(): string;
-
+    public function get_closing_character(): string;
     /**
      * Minimum number of delimiter characters that are needed to active this.
      *
      * Must be at least 1.
      */
-    public function getMinLength(): int;
-
+    public function get_min_length(): int;
     /**
      * Determine how many (if any) of the delimiter characters should be used.
      *
@@ -64,8 +58,7 @@ interface DelimiterProcessorInterface
      * @param DelimiterInterface $opener The opening delimiter run
      * @param DelimiterInterface $closer The closing delimiter run
      */
-    public function getDelimiterUse(DelimiterInterface $opener, DelimiterInterface $closer): int;
-
+    public function get_delimiter_use(Delimiter_Interface $opener, Delimiter_Interface $closer): int;
     /**
      * Process the matched delimiters, e.g. by wrapping the nodes between opener
      * and closer in a new node, or appending a new node after the opener.
@@ -77,5 +70,5 @@ interface DelimiterProcessorInterface
      * @param AbstractStringContainer $closer       The node that contained the closing delimiter
      * @param int                     $delimiterUse The number of delimiters that were used
      */
-    public function process(AbstractStringContainer $opener, AbstractStringContainer $closer, int $delimiterUse): void;
+    public function process(Abstract_String_Container $opener, Abstract_String_Container $closer, int $delimiter_use): void;
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This is part of the league/commonmark package.
  *
@@ -12,16 +11,13 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Table;
 
-namespace League\CommonMark\Extension\Table;
-
-use League\CommonMark\Node\Block\AbstractBlock;
-
-final class TableSection extends AbstractBlock
+use League\Common_Mark\Node\Block\Abstract_Block;
+final class Table_Section extends Abstract_Block
 {
     public const TYPE_HEAD = 'head';
     public const TYPE_BODY = 'body';
-
     /**
      * @psalm-var self::TYPE_*
      * @phpstan-var self::TYPE_*
@@ -29,7 +25,6 @@ final class TableSection extends AbstractBlock
      * @psalm-readonly
      */
     private string $type;
-
     /**
      * @psalm-param self::TYPE_* $type
      *
@@ -38,26 +33,22 @@ final class TableSection extends AbstractBlock
     public function __construct(string $type = self::TYPE_BODY)
     {
         parent::__construct();
-
         $this->type = $type;
     }
-
     /**
      * @psalm-return self::TYPE_*
      *
      * @phpstan-return self::TYPE_*
      */
-    public function getType(): string
+    public function get_type(): string
     {
         return $this->type;
     }
-
-    public function isHead(): bool
+    public function is_head(): bool
     {
         return $this->type === self::TYPE_HEAD;
     }
-
-    public function isBody(): bool
+    public function is_body(): bool
     {
         return $this->type === self::TYPE_BODY;
     }

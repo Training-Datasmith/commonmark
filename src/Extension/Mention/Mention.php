@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,81 +12,64 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Mention;
 
-namespace League\CommonMark\Extension\Mention;
-
-use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
-use League\CommonMark\Node\Inline\Text;
-
+use League\Common_Mark\Extension\Common_Mark\Node\Inline\Link;
+use League\Common_Mark\Node\Inline\Text;
 class Mention extends Link
 {
     private string $name;
-
     private string $prefix;
-
     private string $identifier;
-
     public function __construct(string $name, string $prefix, string $identifier, ?string $label = null)
     {
-        $this->name       = $name;
-        $this->prefix     = $prefix;
+        $this->name = $name;
+        $this->prefix = $prefix;
         $this->identifier = $identifier;
-
         parent::__construct('', $label ?? \sprintf('%s%s', $prefix, $identifier));
     }
-
-    public function getLabel(): ?string
+    public function get_label(): ?string
     {
-        if (($labelNode = $this->findLabelNode()) === null) {
+        if (($label_node = $this->find_label_node()) === null) {
             return null;
         }
-
-        return $labelNode->getLiteral();
+        return $label_node->get_literal();
     }
-
-    public function getIdentifier(): string
+    public function get_identifier(): string
     {
         return $this->identifier;
     }
-
-    public function getName(): ?string
+    public function get_name(): ?string
     {
         return $this->name;
     }
-
-    public function getPrefix(): string
+    public function get_prefix(): string
     {
         return $this->prefix;
     }
-
-    public function hasUrl(): bool
+    public function has_url(): bool
     {
         return $this->url !== '';
     }
-
     /**
      * @return $this
      */
-    public function setLabel(string $label): self
+    public function set_label(string $label): self
     {
-        if (($labelNode = $this->findLabelNode()) === null) {
-            $labelNode = new Text();
-            $this->prependChild($labelNode);
+        if (($label_node = $this->find_label_node()) === null) {
+            $label_node = new Text();
+            $this->prepend_child($label_node);
         }
-
-        $labelNode->setLiteral($label);
-
+        $label_node->set_literal($label);
         return $this;
     }
-
-    private function findLabelNode(): ?Text
+    private function find_label_node(): ?Text
     {
         foreach ($this->children() as $child) {
             if ($child instanceof Text) {
                 return $child;
             }
         }
-
         return null;
     }
 }

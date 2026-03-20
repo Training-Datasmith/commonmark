@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,73 +9,60 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Common_Mark\Parser\Block;
 
-namespace League\CommonMark\Extension\CommonMark\Parser\Block;
-
-use League\CommonMark\Extension\CommonMark\Node\Block\ListData;
-use League\CommonMark\Extension\CommonMark\Node\Block\ListItem;
-use League\CommonMark\Node\Block\AbstractBlock;
-use League\CommonMark\Parser\Block\AbstractBlockContinueParser;
-use League\CommonMark\Parser\Block\BlockContinue;
-use League\CommonMark\Parser\Block\BlockContinueParserInterface;
-use League\CommonMark\Parser\Cursor;
-
-final class ListItemParser extends AbstractBlockContinueParser
+use League\Common_Mark\Extension\Common_Mark\Node\Block\List_Data;
+use League\Common_Mark\Extension\Common_Mark\Node\Block\List_Item;
+use League\Common_Mark\Node\Block\Abstract_Block;
+use League\Common_Mark\Parser\Block\Abstract_Block_Continue_Parser;
+use League\Common_Mark\Parser\Block\Block_Continue;
+use League\Common_Mark\Parser\Block\Block_Continue_Parser_Interface;
+use League\Common_Mark\Parser\Cursor;
+final class List_Item_Parser extends Abstract_Block_Continue_Parser
 {
     /** @psalm-readonly */
-    private ListItem $block;
-
-    public function __construct(ListData $listData)
+    private List_Item $block;
+    public function __construct(List_Data $list_data)
     {
-        $this->block = new ListItem($listData);
+        $this->block = new List_Item($list_data);
     }
-
-    public function getBlock(): ListItem
+    public function get_block(): List_Item
     {
         return $this->block;
     }
-
-    public function isContainer(): bool
+    public function is_container(): bool
     {
         return true;
     }
-
-    public function canContain(AbstractBlock $childBlock): bool
+    public function can_contain(Abstract_Block $child_block): bool
     {
-        return ! $childBlock instanceof ListItem;
+        return !$child_block instanceof List_Item;
     }
-
-    public function tryContinue(Cursor $cursor, BlockContinueParserInterface $activeBlockParser): ?BlockContinue
+    public function try_continue(Cursor $cursor, Block_Continue_Parser_Interface $active_block_parser): ?Block_Continue
     {
-        if ($cursor->isBlank()) {
-            if ($this->block->firstChild() === null) {
+        if ($cursor->is_blank()) {
+            if ($this->block->first_child() === null) {
                 // Blank line after empty list item
-                return BlockContinue::none();
+                return Block_Continue::none();
             }
-
-            $cursor->advanceToNextNonSpaceOrTab();
-
-            return BlockContinue::at($cursor);
+            $cursor->advance_to_next_non_space_or_tab();
+            return Block_Continue::at($cursor);
         }
-
-        $contentIndent = $this->block->getListData()->markerOffset + $this->getBlock()->getListData()->padding;
-        if ($cursor->getIndent() >= $contentIndent) {
-            $cursor->advanceBy($contentIndent, true);
-
-            return BlockContinue::at($cursor);
+        $content_indent = $this->block->get_list_data()->marker_offset + $this->get_block()->get_list_data()->padding;
+        if ($cursor->get_indent() >= $content_indent) {
+            $cursor->advance_by($content_indent, true);
+            return Block_Continue::at($cursor);
         }
-
         // Note: We'll hit this case for lazy continuation lines, they will get added later.
-        return BlockContinue::none();
+        return Block_Continue::none();
     }
-
-    public function closeBlock(): void
+    public function close_block(): void
     {
-        if (($lastChild = $this->block->lastChild()) instanceof AbstractBlock) {
-            $this->block->setEndLine($lastChild->getEndLine());
+        if (($last_child = $this->block->last_child()) instanceof Abstract_Block) {
+            $this->block->set_end_line($last_child->get_end_line());
         } else {
             // Empty list item
-            $this->block->setEndLine($this->block->getStartLine());
+            $this->block->set_end_line($this->block->get_start_line());
         }
     }
 }

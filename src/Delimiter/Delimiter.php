@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,121 +12,95 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Delimiter;
 
-namespace League\CommonMark\Delimiter;
-
-use League\CommonMark\Node\Inline\AbstractStringContainer;
-
-final class Delimiter implements DelimiterInterface
+use League\Common_Mark\Node\Inline\Abstract_String_Container;
+final class Delimiter implements Delimiter_Interface
 {
     /** @psalm-readonly */
     private string $char;
-
     /** @psalm-readonly-allow-private-mutation */
     private int $length;
-
     /** @psalm-readonly */
-    private int $originalLength;
-
+    private int $original_length;
     /** @psalm-readonly */
-    private AbstractStringContainer $inlineNode;
-
+    private Abstract_String_Container $inline_node;
     /** @psalm-readonly-allow-private-mutation */
-    private ?DelimiterInterface $previous = null;
-
+    private ?Delimiter_Interface $previous = null;
     /** @psalm-readonly-allow-private-mutation */
-    private ?DelimiterInterface $next = null;
-
+    private ?Delimiter_Interface $next = null;
     /** @psalm-readonly */
-    private bool $canOpen;
-
+    private bool $can_open;
     /** @psalm-readonly */
-    private bool $canClose;
-
+    private bool $can_close;
     /** @psalm-readonly-allow-private-mutation */
     private bool $active;
-
     /** @psalm-readonly */
     private ?int $index = null;
-
-    public function __construct(string $char, int $numDelims, AbstractStringContainer $node, bool $canOpen, bool $canClose, ?int $index = null)
+    public function __construct(string $char, int $num_delims, Abstract_String_Container $node, bool $can_open, bool $can_close, ?int $index = null)
     {
-        $this->char           = $char;
-        $this->length         = $numDelims;
-        $this->originalLength = $numDelims;
-        $this->inlineNode     = $node;
-        $this->canOpen        = $canOpen;
-        $this->canClose       = $canClose;
-        $this->active         = true;
-        $this->index          = $index;
+        $this->char = $char;
+        $this->length = $num_delims;
+        $this->original_length = $num_delims;
+        $this->inline_node = $node;
+        $this->can_open = $can_open;
+        $this->can_close = $can_close;
+        $this->active = true;
+        $this->index = $index;
     }
-
-    public function canClose(): bool
+    public function can_close(): bool
     {
-        return $this->canClose;
+        return $this->can_close;
     }
-
-    public function canOpen(): bool
+    public function can_open(): bool
     {
-        return $this->canOpen;
+        return $this->can_open;
     }
-
-    public function isActive(): bool
+    public function is_active(): bool
     {
         return $this->active;
     }
-
-    public function setActive(bool $active): void
+    public function set_active(bool $active): void
     {
         $this->active = $active;
     }
-
-    public function getChar(): string
+    public function get_char(): string
     {
         return $this->char;
     }
-
-    public function getIndex(): ?int
+    public function get_index(): ?int
     {
         return $this->index;
     }
-
-    public function getNext(): ?DelimiterInterface
+    public function get_next(): ?Delimiter_Interface
     {
         return $this->next;
     }
-
-    public function setNext(?DelimiterInterface $next): void
+    public function set_next(?Delimiter_Interface $next): void
     {
         $this->next = $next;
     }
-
-    public function getLength(): int
+    public function get_length(): int
     {
         return $this->length;
     }
-
-    public function setLength(int $length): void
+    public function set_length(int $length): void
     {
         $this->length = $length;
     }
-
-    public function getOriginalLength(): int
+    public function get_original_length(): int
     {
-        return $this->originalLength;
+        return $this->original_length;
     }
-
-    public function getInlineNode(): AbstractStringContainer
+    public function get_inline_node(): Abstract_String_Container
     {
-        return $this->inlineNode;
+        return $this->inline_node;
     }
-
-    public function getPrevious(): ?DelimiterInterface
+    public function get_previous(): ?Delimiter_Interface
     {
         return $this->previous;
     }
-
-    public function setPrevious(?DelimiterInterface $previous): void
+    public function set_previous(?Delimiter_Interface $previous): void
     {
         $this->previous = $previous;
     }

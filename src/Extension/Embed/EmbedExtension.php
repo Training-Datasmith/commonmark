@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,39 +9,27 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Embed;
 
-namespace League\CommonMark\Extension\Embed;
-
-use League\CommonMark\Environment\EnvironmentBuilderInterface;
-use League\CommonMark\Event\DocumentParsedEvent;
-use League\CommonMark\Extension\ConfigurableExtensionInterface;
-use League\Config\ConfigurationBuilderInterface;
+use League\Common_Mark\Environment\Environment_Builder_Interface;
+use League\Common_Mark\Event\Document_Parsed_Event;
+use League\Common_Mark\Extension\Configurable_Extension_Interface;
+use League\Config\Configuration_Builder_Interface;
 use Nette\Schema\Expect;
-
-final class EmbedExtension implements ConfigurableExtensionInterface
+final class Embed_Extension implements Configurable_Extension_Interface
 {
-    public function configureSchema(ConfigurationBuilderInterface $builder): void
+    public function configure_schema(Configuration_Builder_Interface $builder): void
     {
-        $builder->addSchema('embed', Expect::structure([
-            'adapter' => Expect::type(EmbedAdapterInterface::class),
-            'allowed_domains' => Expect::arrayOf('string')->default([]),
-            'fallback' => Expect::anyOf('link', 'remove')->default('link'),
-        ]));
+        $builder->add_schema('embed', Expect::structure(['adapter' => Expect::type(Embed_Adapter_Interface::class), 'allowed_domains' => Expect::array_of('string')->default([]), 'fallback' => Expect::any_of('link', 'remove')->default('link')]));
     }
-
-    public function register(EnvironmentBuilderInterface $environment): void
+    public function register(Environment_Builder_Interface $environment): void
     {
-        $adapter = $environment->getConfiguration()->get('embed.adapter');
-        \assert($adapter instanceof EmbedAdapterInterface);
-
-        $allowedDomains = $environment->getConfiguration()->get('embed.allowed_domains');
-        if ($allowedDomains !== []) {
-            $adapter = new DomainFilteringAdapter($adapter, $allowedDomains);
+        $adapter = $environment->get_configuration()->get('embed.adapter');
+        \assert($adapter instanceof Embed_Adapter_Interface);
+        $allowed_domains = $environment->get_configuration()->get('embed.allowed_domains');
+        if ($allowed_domains !== []) {
+            $adapter = new Domain_Filtering_Adapter($adapter, $allowed_domains);
         }
-
-        $environment
-            ->addBlockStartParser(new EmbedStartParser(), 300)
-            ->addEventListener(DocumentParsedEvent::class, new EmbedProcessor($adapter, $environment->getConfiguration()->get('embed.fallback')), 1010)
-            ->addRenderer(Embed::class, new EmbedRenderer());
+        $environment->add_block_start_parser(new Embed_Start_Parser(), 300)->add_event_listener(Document_Parsed_Event::class, new Embed_Processor($adapter, $environment->get_configuration()->get('embed.fallback')), 1010)->add_renderer(Embed::class, new Embed_Renderer());
     }
 }

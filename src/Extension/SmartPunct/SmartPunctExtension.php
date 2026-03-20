@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,52 +12,26 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Smart_Punct;
 
-namespace League\CommonMark\Extension\SmartPunct;
-
-use League\CommonMark\Environment\EnvironmentBuilderInterface;
-use League\CommonMark\Event\DocumentParsedEvent;
-use League\CommonMark\Extension\ConfigurableExtensionInterface;
-use League\CommonMark\Node\Block\Document;
-use League\CommonMark\Node\Block\Paragraph;
-use League\CommonMark\Node\Inline\Text;
-use League\CommonMark\Renderer\Block as CoreBlockRenderer;
-use League\CommonMark\Renderer\Inline as CoreInlineRenderer;
-use League\Config\ConfigurationBuilderInterface;
+use League\Common_Mark\Environment\Environment_Builder_Interface;
+use League\Common_Mark\Event\Document_Parsed_Event;
+use League\Common_Mark\Extension\Configurable_Extension_Interface;
+use League\Common_Mark\Node\Block\Document;
+use League\Common_Mark\Node\Block\Paragraph;
+use League\Common_Mark\Node\Inline\Text;
+use League\Common_Mark\Renderer\Block as CoreBlockRenderer;
+use League\Common_Mark\Renderer\Inline as CoreInlineRenderer;
+use League\Config\Configuration_Builder_Interface;
 use Nette\Schema\Expect;
-
-final class SmartPunctExtension implements ConfigurableExtensionInterface
+final class Smart_Punct_Extension implements Configurable_Extension_Interface
 {
-    public function configureSchema(ConfigurationBuilderInterface $builder): void
+    public function configure_schema(Configuration_Builder_Interface $builder): void
     {
-        $builder->addSchema('smartpunct', Expect::structure([
-            'double_quote_opener' => Expect::string(Quote::DOUBLE_QUOTE_OPENER),
-            'double_quote_closer' => Expect::string(Quote::DOUBLE_QUOTE_CLOSER),
-            'single_quote_opener' => Expect::string(Quote::SINGLE_QUOTE_OPENER),
-            'single_quote_closer' => Expect::string(Quote::SINGLE_QUOTE_CLOSER),
-        ]));
+        $builder->add_schema('smartpunct', Expect::structure(['double_quote_opener' => Expect::string(Quote::DOUBLE_QUOTE_OPENER), 'double_quote_closer' => Expect::string(Quote::DOUBLE_QUOTE_CLOSER), 'single_quote_opener' => Expect::string(Quote::SINGLE_QUOTE_OPENER), 'single_quote_closer' => Expect::string(Quote::SINGLE_QUOTE_CLOSER)]));
     }
-
-    public function register(EnvironmentBuilderInterface $environment): void
+    public function register(Environment_Builder_Interface $environment): void
     {
-        $environment
-            ->addInlineParser(new QuoteParser(), 10)
-            ->addInlineParser(new DashParser(), 0)
-            ->addInlineParser(new EllipsesParser(), 0)
-
-            ->addDelimiterProcessor(QuoteProcessor::createDoubleQuoteProcessor(
-                $environment->getConfiguration()->get('smartpunct/double_quote_opener'),
-                $environment->getConfiguration()->get('smartpunct/double_quote_closer')
-            ))
-            ->addDelimiterProcessor(QuoteProcessor::createSingleQuoteProcessor(
-                $environment->getConfiguration()->get('smartpunct/single_quote_opener'),
-                $environment->getConfiguration()->get('smartpunct/single_quote_closer')
-            ))
-
-            ->addEventListener(DocumentParsedEvent::class, new ReplaceUnpairedQuotesListener())
-
-            ->addRenderer(Document::class, new CoreBlockRenderer\DocumentRenderer(), 0)
-            ->addRenderer(Paragraph::class, new CoreBlockRenderer\ParagraphRenderer(), 0)
-            ->addRenderer(Text::class, new CoreInlineRenderer\TextRenderer(), 0);
+        $environment->add_inline_parser(new Quote_Parser(), 10)->add_inline_parser(new Dash_Parser(), 0)->add_inline_parser(new Ellipses_Parser(), 0)->add_delimiter_processor(Quote_Processor::create_double_quote_processor($environment->get_configuration()->get('smartpunct/double_quote_opener'), $environment->get_configuration()->get('smartpunct/double_quote_closer')))->add_delimiter_processor(Quote_Processor::create_single_quote_processor($environment->get_configuration()->get('smartpunct/single_quote_opener'), $environment->get_configuration()->get('smartpunct/single_quote_closer')))->add_event_listener(Document_Parsed_Event::class, new Replace_Unpaired_Quotes_Listener())->add_renderer(Document::class, new Core_Block_Renderer\Document_Renderer(), 0)->add_renderer(Paragraph::class, new Core_Block_Renderer\Paragraph_Renderer(), 0)->add_renderer(Text::class, new Core_Inline_Renderer\Text_Renderer(), 0);
     }
 }

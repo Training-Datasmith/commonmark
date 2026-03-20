@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,67 +9,54 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Common_Mark\Parser\Block;
 
-namespace League\CommonMark\Extension\CommonMark\Parser\Block;
-
-use League\CommonMark\Extension\CommonMark\Node\Block\IndentedCode;
-use League\CommonMark\Parser\Block\AbstractBlockContinueParser;
-use League\CommonMark\Parser\Block\BlockContinue;
-use League\CommonMark\Parser\Block\BlockContinueParserInterface;
-use League\CommonMark\Parser\Cursor;
-use League\CommonMark\Util\ArrayCollection;
-
-final class IndentedCodeParser extends AbstractBlockContinueParser
+use League\Common_Mark\Extension\Common_Mark\Node\Block\Indented_Code;
+use League\Common_Mark\Parser\Block\Abstract_Block_Continue_Parser;
+use League\Common_Mark\Parser\Block\Block_Continue;
+use League\Common_Mark\Parser\Block\Block_Continue_Parser_Interface;
+use League\Common_Mark\Parser\Cursor;
+use League\Common_Mark\Util\Array_Collection;
+final class Indented_Code_Parser extends Abstract_Block_Continue_Parser
 {
     /** @psalm-readonly */
-    private IndentedCode $block;
-
+    private Indented_Code $block;
     /** @var ArrayCollection<string> */
-    private ArrayCollection $strings;
-
+    private Array_Collection $strings;
     public function __construct()
     {
-        $this->block   = new IndentedCode();
-        $this->strings = new ArrayCollection();
+        $this->block = new Indented_Code();
+        $this->strings = new Array_Collection();
     }
-
-    public function getBlock(): IndentedCode
+    public function get_block(): Indented_Code
     {
         return $this->block;
     }
-
-    public function tryContinue(Cursor $cursor, BlockContinueParserInterface $activeBlockParser): ?BlockContinue
+    public function try_continue(Cursor $cursor, Block_Continue_Parser_Interface $active_block_parser): ?Block_Continue
     {
-        if ($cursor->isIndented()) {
-            $cursor->advanceBy(Cursor::INDENT_LEVEL, true);
-
-            return BlockContinue::at($cursor);
+        if ($cursor->is_indented()) {
+            $cursor->advance_by(Cursor::INDENT_LEVEL, true);
+            return Block_Continue::at($cursor);
         }
-
-        if ($cursor->isBlank()) {
-            $cursor->advanceToNextNonSpaceOrTab();
-
-            return BlockContinue::at($cursor);
+        if ($cursor->is_blank()) {
+            $cursor->advance_to_next_non_space_or_tab();
+            return Block_Continue::at($cursor);
         }
-
-        return BlockContinue::none();
+        return Block_Continue::none();
     }
-
-    public function addLine(string $line): void
+    public function add_line(string $line): void
     {
         $this->strings[] = $line;
     }
-
-    public function closeBlock(): void
+    public function close_block(): void
     {
-        $lines = $this->strings->toArray();
-
+        $lines = $this->strings->to_array();
         // Note that indented code block cannot be empty, so $lines will always have at least one non-empty element
-        while (\preg_match('/^[ \t]*$/', \end($lines))) { // @phpstan-ignore-line
+        while (\preg_match('/^[ \t]*$/', \end($lines))) {
+            // @phpstan-ignore-line
             \array_pop($lines);
         }
-
-        $this->block->setLiteral(\implode("\n", $lines) . "\n");
-        $this->block->setEndLine($this->block->getStartLine() + \count($lines) - 1);
+        $this->block->set_literal(\implode("\n", $lines) . "\n");
+        $this->block->set_end_line($this->block->get_start_line() + \count($lines) - 1);
     }
 }

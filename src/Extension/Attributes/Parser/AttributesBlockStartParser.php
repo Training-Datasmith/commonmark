@@ -9,32 +9,26 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace League\Common_Mark\Extension\Attributes\Parser;
 
-declare(strict_types=1);
-
-namespace League\CommonMark\Extension\Attributes\Parser;
-
-use League\CommonMark\Extension\Attributes\Util\AttributesHelper;
-use League\CommonMark\Parser\Block\BlockStart;
-use League\CommonMark\Parser\Block\BlockStartParserInterface;
-use League\CommonMark\Parser\Cursor;
-use League\CommonMark\Parser\MarkdownParserStateInterface;
-
-final class AttributesBlockStartParser implements BlockStartParserInterface
+use League\Common_Mark\Extension\Attributes\Util\Attributes_Helper;
+use League\Common_Mark\Parser\Block\Block_Start;
+use League\Common_Mark\Parser\Block\Block_Start_Parser_Interface;
+use League\Common_Mark\Parser\Cursor;
+use League\Common_Mark\Parser\Markdown_Parser_State_Interface;
+final class Attributes_Block_Start_Parser implements Block_Start_Parser_Interface
 {
-    public function tryStart(Cursor $cursor, MarkdownParserStateInterface $parserState): ?BlockStart
+    public function try_start(Cursor $cursor, Markdown_Parser_State_Interface $parser_state): ?Block_Start
     {
-        $originalPosition = $cursor->getPosition();
-        $attributes       = AttributesHelper::parseAttributes($cursor);
-
-        if ($attributes === [] && $originalPosition === $cursor->getPosition()) {
-            return BlockStart::none();
+        $original_position = $cursor->get_position();
+        $attributes = Attributes_Helper::parse_attributes($cursor);
+        if ($attributes === [] && $original_position === $cursor->get_position()) {
+            return Block_Start::none();
         }
-
-        if ($cursor->getNextNonSpaceCharacter() !== null) {
-            return BlockStart::none();
+        if ($cursor->get_next_non_space_character() !== null) {
+            return Block_Start::none();
         }
-
-        return BlockStart::of(new AttributesBlockContinueParser($attributes, $parserState->getActiveBlockParser()->getBlock()))->at($cursor);
+        return Block_Start::of(new Attributes_Block_Continue_Parser($attributes, $parser_state->get_active_block_parser()->get_block()))->at($cursor);
     }
 }

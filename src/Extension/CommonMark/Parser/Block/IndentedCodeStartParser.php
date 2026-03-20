@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,33 +9,27 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Common_Mark\Parser\Block;
 
-namespace League\CommonMark\Extension\CommonMark\Parser\Block;
-
-use League\CommonMark\Node\Block\Paragraph;
-use League\CommonMark\Parser\Block\BlockStart;
-use League\CommonMark\Parser\Block\BlockStartParserInterface;
-use League\CommonMark\Parser\Cursor;
-use League\CommonMark\Parser\MarkdownParserStateInterface;
-
-final class IndentedCodeStartParser implements BlockStartParserInterface
+use League\Common_Mark\Node\Block\Paragraph;
+use League\Common_Mark\Parser\Block\Block_Start;
+use League\Common_Mark\Parser\Block\Block_Start_Parser_Interface;
+use League\Common_Mark\Parser\Cursor;
+use League\Common_Mark\Parser\Markdown_Parser_State_Interface;
+final class Indented_Code_Start_Parser implements Block_Start_Parser_Interface
 {
-    public function tryStart(Cursor $cursor, MarkdownParserStateInterface $parserState): ?BlockStart
+    public function try_start(Cursor $cursor, Markdown_Parser_State_Interface $parser_state): ?Block_Start
     {
-        if (! $cursor->isIndented()) {
-            return BlockStart::none();
+        if (!$cursor->is_indented()) {
+            return Block_Start::none();
         }
-
-        if ($parserState->getActiveBlockParser()->getBlock() instanceof Paragraph) {
-            return BlockStart::none();
+        if ($parser_state->get_active_block_parser()->get_block() instanceof Paragraph) {
+            return Block_Start::none();
         }
-
-        if ($cursor->isBlank()) {
-            return BlockStart::none();
+        if ($cursor->is_blank()) {
+            return Block_Start::none();
         }
-
-        $cursor->advanceBy(Cursor::INDENT_LEVEL, true);
-
-        return BlockStart::of(new IndentedCodeParser())->at($cursor);
+        $cursor->advance_by(Cursor::INDENT_LEVEL, true);
+        return Block_Start::of(new Indented_Code_Parser())->at($cursor);
     }
 }

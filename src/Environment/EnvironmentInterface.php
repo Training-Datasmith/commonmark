@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,46 +9,39 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Environment;
 
-namespace League\CommonMark\Environment;
-
-use League\CommonMark\Delimiter\Processor\DelimiterProcessorCollection;
-use League\CommonMark\Extension\ExtensionInterface;
-use League\CommonMark\Node\Node;
-use League\CommonMark\Normalizer\TextNormalizerInterface;
-use League\CommonMark\Parser\Block\BlockStartParserInterface;
-use League\CommonMark\Parser\Inline\InlineParserInterface;
-use League\CommonMark\Renderer\NodeRendererInterface;
-use League\Config\ConfigurationProviderInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
-
-interface EnvironmentInterface extends ConfigurationProviderInterface, EventDispatcherInterface
+use League\Common_Mark\Delimiter\Processor\Delimiter_Processor_Collection;
+use League\Common_Mark\Extension\Extension_Interface;
+use League\Common_Mark\Node\Node;
+use League\Common_Mark\Normalizer\Text_Normalizer_Interface;
+use League\Common_Mark\Parser\Block\Block_Start_Parser_Interface;
+use League\Common_Mark\Parser\Inline\Inline_Parser_Interface;
+use League\Common_Mark\Renderer\Node_Renderer_Interface;
+use League\Config\Configuration_Provider_Interface;
+use Psr\Event_Dispatcher\Event_Dispatcher_Interface;
+interface Environment_Interface extends Configuration_Provider_Interface, Event_Dispatcher_Interface
 {
     /**
      * Get all registered extensions
      *
      * @return ExtensionInterface[]
      */
-    public function getExtensions(): iterable;
-
+    public function get_extensions(): iterable;
     /**
      * @return iterable<BlockStartParserInterface>
      */
-    public function getBlockStartParsers(): iterable;
-
+    public function get_block_start_parsers(): iterable;
     /**
      * @return iterable<InlineParserInterface>
      */
-    public function getInlineParsers(): iterable;
-
-    public function getDelimiterProcessors(): DelimiterProcessorCollection;
-
+    public function get_inline_parsers(): iterable;
+    public function get_delimiter_processors(): Delimiter_Processor_Collection;
     /**
      * @psalm-param class-string<Node> $nodeClass
      *
      * @return iterable<NodeRendererInterface>
      */
-    public function getRenderersForClass(string $nodeClass): iterable;
-
-    public function getSlugNormalizer(): TextNormalizerInterface;
+    public function get_renderers_for_class(string $node_class): iterable;
+    public function get_slug_normalizer(): Text_Normalizer_Interface;
 }

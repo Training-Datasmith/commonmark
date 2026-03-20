@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,44 +12,29 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Delimiter;
 
-namespace League\CommonMark\Delimiter;
-
-use League\CommonMark\Node\Inline\AbstractStringContainer;
-
-interface DelimiterInterface
+use League\Common_Mark\Node\Inline\Abstract_String_Container;
+interface Delimiter_Interface
 {
-    public function canClose(): bool;
-
-    public function canOpen(): bool;
-
+    public function can_close(): bool;
+    public function can_open(): bool;
     /**
      * @deprecated This method is no longer used internally and will be removed in 3.0
      */
-    public function isActive(): bool;
-
+    public function is_active(): bool;
     /**
      * @deprecated This method is no longer used internally and will be removed in 3.0
      */
-    public function setActive(bool $active): void;
-
-    public function getChar(): string;
-
-    public function getIndex(): ?int;
-
-    public function getNext(): ?DelimiterInterface;
-
-    public function setNext(?DelimiterInterface $next): void;
-
-    public function getLength(): int;
-
-    public function setLength(int $length): void;
-
-    public function getOriginalLength(): int;
-
-    public function getInlineNode(): AbstractStringContainer;
-
-    public function getPrevious(): ?DelimiterInterface;
-
-    public function setPrevious(?DelimiterInterface $previous): void;
+    public function set_active(bool $active): void;
+    public function get_char(): string;
+    public function get_index(): ?int;
+    public function get_next(): ?Delimiter_Interface;
+    public function set_next(?Delimiter_Interface $next): void;
+    public function get_length(): int;
+    public function set_length(int $length): void;
+    public function get_original_length(): int;
+    public function get_inline_node(): Abstract_String_Container;
+    public function get_previous(): ?Delimiter_Interface;
+    public function set_previous(?Delimiter_Interface $previous): void;
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,42 +9,35 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Common_Mark\Parser\Block;
 
-namespace League\CommonMark\Extension\CommonMark\Parser\Block;
-
-use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
-use League\CommonMark\Parser\Block\AbstractBlockContinueParser;
-use League\CommonMark\Parser\Block\BlockContinue;
-use League\CommonMark\Parser\Block\BlockContinueParserInterface;
-use League\CommonMark\Parser\Block\BlockContinueParserWithInlinesInterface;
-use League\CommonMark\Parser\Cursor;
-use League\CommonMark\Parser\InlineParserEngineInterface;
-
-final class HeadingParser extends AbstractBlockContinueParser implements BlockContinueParserWithInlinesInterface
+use League\Common_Mark\Extension\Common_Mark\Node\Block\Heading;
+use League\Common_Mark\Parser\Block\Abstract_Block_Continue_Parser;
+use League\Common_Mark\Parser\Block\Block_Continue;
+use League\Common_Mark\Parser\Block\Block_Continue_Parser_Interface;
+use League\Common_Mark\Parser\Block\Block_Continue_Parser_With_Inlines_Interface;
+use League\Common_Mark\Parser\Cursor;
+use League\Common_Mark\Parser\Inline_Parser_Engine_Interface;
+final class Heading_Parser extends Abstract_Block_Continue_Parser implements Block_Continue_Parser_With_Inlines_Interface
 {
     /** @psalm-readonly */
     private Heading $block;
-
     private string $content;
-
     public function __construct(int $level, string $content)
     {
-        $this->block   = new Heading($level);
+        $this->block = new Heading($level);
         $this->content = $content;
     }
-
-    public function getBlock(): Heading
+    public function get_block(): Heading
     {
         return $this->block;
     }
-
-    public function tryContinue(Cursor $cursor, BlockContinueParserInterface $activeBlockParser): ?BlockContinue
+    public function try_continue(Cursor $cursor, Block_Continue_Parser_Interface $active_block_parser): ?Block_Continue
     {
-        return BlockContinue::none();
+        return Block_Continue::none();
     }
-
-    public function parseInlines(InlineParserEngineInterface $inlineParser): void
+    public function parse_inlines(Inline_Parser_Engine_Interface $inline_parser): void
     {
-        $inlineParser->parse($this->content, $this->block);
+        $inline_parser->parse($this->content, $this->block);
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,25 +9,21 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Event;
 
-namespace League\CommonMark\Event;
-
-use League\CommonMark\Node\Block\Document;
-
+use League\Common_Mark\Node\Block\Document;
 /**
  * Event dispatched when the document has been fully parsed
  */
-final class DocumentParsedEvent extends AbstractEvent
+final class Document_Parsed_Event extends Abstract_Event
 {
     /** @psalm-readonly */
     private Document $document;
-
     public function __construct(Document $document)
     {
         $this->document = $document;
     }
-
-    public function getDocument(): Document
+    public function get_document(): Document
     {
         return $this->document;
     }

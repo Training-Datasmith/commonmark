@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,28 +12,22 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Common_Mark\Node\Inline;
 
-namespace League\CommonMark\Extension\CommonMark\Node\Inline;
-
-use League\CommonMark\Node\Inline\AbstractInline;
-
-abstract class AbstractWebResource extends AbstractInline
+use League\Common_Mark\Node\Inline\Abstract_Inline;
+abstract class Abstract_Web_Resource extends Abstract_Inline
 {
     protected string $url;
-
     public function __construct(string $url)
     {
         parent::__construct();
-
         $this->url = $url;
     }
-
-    public function getUrl(): string
+    public function get_url(): string
     {
         return $this->url;
     }
-
-    public function setUrl(string $url): void
+    public function set_url(string $url): void
     {
         $this->url = $url;
     }

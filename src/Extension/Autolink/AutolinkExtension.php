@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,30 +9,21 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Autolink;
 
-namespace League\CommonMark\Extension\Autolink;
-
-use League\CommonMark\Environment\EnvironmentBuilderInterface;
-use League\CommonMark\Extension\ConfigurableExtensionInterface;
-use League\Config\ConfigurationBuilderInterface;
+use League\Common_Mark\Environment\Environment_Builder_Interface;
+use League\Common_Mark\Extension\Configurable_Extension_Interface;
+use League\Config\Configuration_Builder_Interface;
 use Nette\Schema\Expect;
-
-final class AutolinkExtension implements ConfigurableExtensionInterface
+final class Autolink_Extension implements Configurable_Extension_Interface
 {
-    public function configureSchema(ConfigurationBuilderInterface $builder): void
+    public function configure_schema(Configuration_Builder_Interface $builder): void
     {
-        $builder->addSchema('autolink', Expect::structure([
-            'allowed_protocols' => Expect::listOf('string')->default(['http', 'https', 'ftp'])->mergeDefaults(false),
-            'default_protocol' => Expect::string()->default('http'),
-        ]));
+        $builder->add_schema('autolink', Expect::structure(['allowed_protocols' => Expect::list_of('string')->default(['http', 'https', 'ftp'])->merge_defaults(false), 'default_protocol' => Expect::string()->default('http')]));
     }
-
-    public function register(EnvironmentBuilderInterface $environment): void
+    public function register(Environment_Builder_Interface $environment): void
     {
-        $environment->addInlineParser(new EmailAutolinkParser());
-        $environment->addInlineParser(new UrlAutolinkParser(
-            $environment->getConfiguration()->get('autolink.allowed_protocols'),
-            $environment->getConfiguration()->get('autolink.default_protocol'),
-        ));
+        $environment->add_inline_parser(new Email_Autolink_Parser());
+        $environment->add_inline_parser(new Url_Autolink_Parser($environment->get_configuration()->get('autolink.allowed_protocols'), $environment->get_configuration()->get('autolink.default_protocol')));
     }
 }

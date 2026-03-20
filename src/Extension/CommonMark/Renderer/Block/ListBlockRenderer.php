@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,17 +12,15 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Common_Mark\Renderer\Block;
 
-namespace League\CommonMark\Extension\CommonMark\Renderer\Block;
-
-use League\CommonMark\Extension\CommonMark\Node\Block\ListBlock;
-use League\CommonMark\Node\Node;
-use League\CommonMark\Renderer\ChildNodeRendererInterface;
-use League\CommonMark\Renderer\NodeRendererInterface;
-use League\CommonMark\Util\HtmlElement;
-use League\CommonMark\Xml\XmlNodeRendererInterface;
-
-final class ListBlockRenderer implements NodeRendererInterface, XmlNodeRendererInterface
+use League\Common_Mark\Extension\Common_Mark\Node\Block\List_Block;
+use League\Common_Mark\Node\Node;
+use League\Common_Mark\Renderer\Child_Node_Renderer_Interface;
+use League\Common_Mark\Renderer\Node_Renderer_Interface;
+use League\Common_Mark\Util\Html_Element;
+use League\Common_Mark\Xml\Xml_Node_Renderer_Interface;
+final class List_Block_Renderer implements Node_Renderer_Interface, Xml_Node_Renderer_Interface
 {
     /**
      * @param ListBlock $node
@@ -32,30 +29,22 @@ final class ListBlockRenderer implements NodeRendererInterface, XmlNodeRendererI
      *
      * @psalm-suppress MoreSpecificImplementedParamType
      */
-    public function render(Node $node, ChildNodeRendererInterface $childRenderer): \Stringable
+    public function render(Node $node, Child_Node_Renderer_Interface $child_renderer): \Stringable
     {
-        ListBlock::assertInstanceOf($node);
-
-        $listData = $node->getListData();
-
-        $tag = $listData->type === ListBlock::TYPE_BULLET ? 'ul' : 'ol';
-
+        List_Block::assert_instance_of($node);
+        $list_data = $node->get_list_data();
+        $tag = $list_data->type === List_Block::TYPE_BULLET ? 'ul' : 'ol';
         $attrs = $node->data->get('attributes');
-
-        if ($listData->start !== null && $listData->start !== 1) {
-            $attrs['start'] = (string) $listData->start;
+        if ($list_data->start !== null && $list_data->start !== 1) {
+            $attrs['start'] = (string) $list_data->start;
         }
-
-        $innerSeparator = $childRenderer->getInnerSeparator();
-
-        return new HtmlElement($tag, $attrs, $innerSeparator . $childRenderer->renderNodes($node->children()) . $innerSeparator);
+        $inner_separator = $child_renderer->get_inner_separator();
+        return new Html_Element($tag, $attrs, $inner_separator . $child_renderer->render_nodes($node->children()) . $inner_separator);
     }
-
-    public function getXmlTagName(Node $node): string
+    public function get_xml_tag_name(Node $node): string
     {
         return 'list';
     }
-
     /**
      * @param ListBlock $node
      *
@@ -63,24 +52,13 @@ final class ListBlockRenderer implements NodeRendererInterface, XmlNodeRendererI
      *
      * @psalm-suppress MoreSpecificImplementedParamType
      */
-    public function getXmlAttributes(Node $node): array
+    public function get_xml_attributes(Node $node): array
     {
-        ListBlock::assertInstanceOf($node);
-
-        $data = $node->getListData();
-
-        if ($data->type === ListBlock::TYPE_BULLET) {
-            return [
-                'type' => $data->type,
-                'tight' => $node->isTight() ? 'true' : 'false',
-            ];
+        List_Block::assert_instance_of($node);
+        $data = $node->get_list_data();
+        if ($data->type === List_Block::TYPE_BULLET) {
+            return ['type' => $data->type, 'tight' => $node->is_tight() ? 'true' : 'false'];
         }
-
-        return [
-            'type' => $data->type,
-            'start' => $data->start ?? 1,
-            'tight' => $node->isTight(),
-            'delimiter' => $data->delimiter ?? ListBlock::DELIM_PERIOD,
-        ];
+        return ['type' => $data->type, 'start' => $data->start ?? 1, 'tight' => $node->is_tight(), 'delimiter' => $data->delimiter ?? List_Block::DELIM_PERIOD];
     }
 }

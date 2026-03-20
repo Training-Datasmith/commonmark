@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,16 +9,14 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Description_List\Renderer;
 
-namespace League\CommonMark\Extension\DescriptionList\Renderer;
-
-use League\CommonMark\Extension\DescriptionList\Node\DescriptionTerm;
-use League\CommonMark\Node\Node;
-use League\CommonMark\Renderer\ChildNodeRendererInterface;
-use League\CommonMark\Renderer\NodeRendererInterface;
-use League\CommonMark\Util\HtmlElement;
-
-final class DescriptionTermRenderer implements NodeRendererInterface
+use League\Common_Mark\Extension\Description_List\Node\Description_Term;
+use League\Common_Mark\Node\Node;
+use League\Common_Mark\Renderer\Child_Node_Renderer_Interface;
+use League\Common_Mark\Renderer\Node_Renderer_Interface;
+use League\Common_Mark\Util\Html_Element;
+final class Description_Term_Renderer implements Node_Renderer_Interface
 {
     /**
      * @param DescriptionTerm $node
@@ -28,10 +25,9 @@ final class DescriptionTermRenderer implements NodeRendererInterface
      *
      * @psalm-suppress MoreSpecificImplementedParamType
      */
-    public function render(Node $node, ChildNodeRendererInterface $childRenderer): \Stringable
+    public function render(Node $node, Child_Node_Renderer_Interface $child_renderer): \Stringable
     {
-        DescriptionTerm::assertInstanceOf($node);
-
-        return new HtmlElement('dt', [], $childRenderer->renderNodes($node->children()));
+        Description_Term::assert_instance_of($node);
+        return new Html_Element('dt', [], $child_renderer->render_nodes($node->children()));
     }
 }

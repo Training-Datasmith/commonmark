@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,11 +9,9 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Table_Of_Contents\Node;
 
-namespace League\CommonMark\Extension\TableOfContents\Node;
-
-use League\CommonMark\Extension\CommonMark\Node\Block\ListBlock;
-
-final class TableOfContents extends ListBlock
+use League\Common_Mark\Extension\Common_Mark\Node\Block\List_Block;
+final class Table_Of_Contents extends List_Block
 {
 }

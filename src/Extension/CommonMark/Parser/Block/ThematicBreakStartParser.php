@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,31 +9,26 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Common_Mark\Parser\Block;
 
-namespace League\CommonMark\Extension\CommonMark\Parser\Block;
-
-use League\CommonMark\Parser\Block\BlockStart;
-use League\CommonMark\Parser\Block\BlockStartParserInterface;
-use League\CommonMark\Parser\Cursor;
-use League\CommonMark\Parser\MarkdownParserStateInterface;
-use League\CommonMark\Util\RegexHelper;
-
-final class ThematicBreakStartParser implements BlockStartParserInterface
+use League\Common_Mark\Parser\Block\Block_Start;
+use League\Common_Mark\Parser\Block\Block_Start_Parser_Interface;
+use League\Common_Mark\Parser\Cursor;
+use League\Common_Mark\Parser\Markdown_Parser_State_Interface;
+use League\Common_Mark\Util\Regex_Helper;
+final class Thematic_Break_Start_Parser implements Block_Start_Parser_Interface
 {
-    public function tryStart(Cursor $cursor, MarkdownParserStateInterface $parserState): ?BlockStart
+    public function try_start(Cursor $cursor, Markdown_Parser_State_Interface $parser_state): ?Block_Start
     {
-        if ($cursor->isIndented()) {
-            return BlockStart::none();
+        if ($cursor->is_indented()) {
+            return Block_Start::none();
         }
-
-        $match = RegexHelper::matchAt(RegexHelper::REGEX_THEMATIC_BREAK, $cursor->getLine(), $cursor->getNextNonSpacePosition());
+        $match = Regex_Helper::match_at(Regex_Helper::REGEX_THEMATIC_BREAK, $cursor->get_line(), $cursor->get_next_non_space_position());
         if ($match === null) {
-            return BlockStart::none();
+            return Block_Start::none();
         }
-
         // Advance to the end of the string, consuming the entire line (of the thematic break)
-        $cursor->advanceToEnd();
-
-        return BlockStart::of(new ThematicBreakParser())->at($cursor);
+        $cursor->advance_to_end();
+        return Block_Start::of(new Thematic_Break_Parser())->at($cursor);
     }
 }

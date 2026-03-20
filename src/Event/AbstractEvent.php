@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,11 +12,9 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Event;
 
-namespace League\CommonMark\Event;
-
-use Psr\EventDispatcher\StoppableEventInterface;
-
+use Psr\Event_Dispatcher\Stoppable_Event_Interface;
 /**
  * Base class for classes containing event data.
  *
@@ -27,19 +24,17 @@ use Psr\EventDispatcher\StoppableEventInterface;
  * You can call the method stopPropagation() to abort the execution of
  * further listeners in your event listener.
  */
-abstract class AbstractEvent implements StoppableEventInterface
+abstract class Abstract_Event implements Stoppable_Event_Interface
 {
     /** @psalm-readonly-allow-private-mutation */
-    private bool $propagationStopped = false;
-
+    private bool $propagation_stopped = false;
     /**
      * Returns whether further event listeners should be triggered.
      */
-    final public function isPropagationStopped(): bool
+    final public function is_propagation_stopped(): bool
     {
-        return $this->propagationStopped;
+        return $this->propagation_stopped;
     }
-
     /**
      * Stops the propagation of the event to further event listeners.
      *
@@ -47,8 +42,8 @@ abstract class AbstractEvent implements StoppableEventInterface
      * further event listener will be triggered once any trigger calls
      * stopPropagation().
      */
-    final public function stopPropagation(): void
+    final public function stop_propagation(): void
     {
-        $this->propagationStopped = true;
+        $this->propagation_stopped = true;
     }
 }

@@ -9,48 +9,35 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace League\Common_Mark\Extension\Footnote\Parser;
 
-declare(strict_types=1);
-
-namespace League\CommonMark\Extension\Footnote\Parser;
-
-use League\CommonMark\Extension\Footnote\Node\FootnoteRef;
-use League\CommonMark\Parser\Inline\InlineParserInterface;
-use League\CommonMark\Parser\Inline\InlineParserMatch;
-use League\CommonMark\Parser\InlineParserContext;
-use League\CommonMark\Reference\Reference;
-use League\Config\ConfigurationAwareInterface;
-use League\Config\ConfigurationInterface;
-
-final class FootnoteRefParser implements InlineParserInterface, ConfigurationAwareInterface
+use League\Common_Mark\Extension\Footnote\Node\Footnote_Ref;
+use League\Common_Mark\Parser\Inline\Inline_Parser_Interface;
+use League\Common_Mark\Parser\Inline\Inline_Parser_Match;
+use League\Common_Mark\Parser\Inline_Parser_Context;
+use League\Common_Mark\Reference\Reference;
+use League\Config\Configuration_Aware_Interface;
+use League\Config\Configuration_Interface;
+final class Footnote_Ref_Parser implements Inline_Parser_Interface, Configuration_Aware_Interface
 {
-    private ConfigurationInterface $config;
-
-    public function getMatchDefinition(): InlineParserMatch
+    private Configuration_Interface $config;
+    public function get_match_definition(): Inline_Parser_Match
     {
-        return InlineParserMatch::regex('\[\^([^\s\]]+)\]');
+        return Inline_Parser_Match::regex('\[\^([^\s\]]+)\]');
     }
-
-    public function parse(InlineParserContext $inlineContext): bool
+    public function parse(Inline_Parser_Context $inline_context): bool
     {
-        $inlineContext->getCursor()->advanceBy($inlineContext->getFullMatchLength());
-
-        [$label] = $inlineContext->getSubMatches();
-        $inlineContext->getContainer()->appendChild(new FootnoteRef($this->createReference($label)));
-
+        $inline_context->get_cursor()->advance_by($inline_context->get_full_match_length());
+        [$label] = $inline_context->get_sub_matches();
+        $inline_context->get_container()->append_child(new Footnote_Ref($this->create_reference($label)));
         return true;
     }
-
-    private function createReference(string $label): Reference
+    private function create_reference(string $label): Reference
     {
-        return new Reference(
-            $label,
-            '#' . $this->config->get('footnote/footnote_id_prefix') . $label,
-            $label
-        );
+        return new Reference($label, '#' . $this->config->get('footnote/footnote_id_prefix') . $label, $label);
     }
-
-    public function setConfiguration(ConfigurationInterface $configuration): void
+    public function set_configuration(Configuration_Interface $configuration): void
     {
         $this->config = $configuration;
     }

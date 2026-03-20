@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,18 +12,16 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Common_Mark\Renderer\Inline;
 
-namespace League\CommonMark\Extension\CommonMark\Renderer\Inline;
-
-use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
-use League\CommonMark\Node\Node;
-use League\CommonMark\Renderer\ChildNodeRendererInterface;
-use League\CommonMark\Renderer\NodeRendererInterface;
-use League\CommonMark\Util\HtmlElement;
-use League\CommonMark\Util\Xml;
-use League\CommonMark\Xml\XmlNodeRendererInterface;
-
-final class CodeRenderer implements NodeRendererInterface, XmlNodeRendererInterface
+use League\Common_Mark\Extension\Common_Mark\Node\Inline\Code;
+use League\Common_Mark\Node\Node;
+use League\Common_Mark\Renderer\Child_Node_Renderer_Interface;
+use League\Common_Mark\Renderer\Node_Renderer_Interface;
+use League\Common_Mark\Util\Html_Element;
+use League\Common_Mark\Util\Xml;
+use League\Common_Mark\Xml\Xml_Node_Renderer_Interface;
+final class Code_Renderer implements Node_Renderer_Interface, Xml_Node_Renderer_Interface
 {
     /**
      * @param Code $node
@@ -33,24 +30,20 @@ final class CodeRenderer implements NodeRendererInterface, XmlNodeRendererInterf
      *
      * @psalm-suppress MoreSpecificImplementedParamType
      */
-    public function render(Node $node, ChildNodeRendererInterface $childRenderer): \Stringable
+    public function render(Node $node, Child_Node_Renderer_Interface $child_renderer): \Stringable
     {
-        Code::assertInstanceOf($node);
-
+        Code::assert_instance_of($node);
         $attrs = $node->data->get('attributes');
-
-        return new HtmlElement('code', $attrs, Xml::escape($node->getLiteral()));
+        return new Html_Element('code', $attrs, Xml::escape($node->get_literal()));
     }
-
-    public function getXmlTagName(Node $node): string
+    public function get_xml_tag_name(Node $node): string
     {
         return 'code';
     }
-
     /**
      * {@inheritDoc}
      */
-    public function getXmlAttributes(Node $node): array
+    public function get_xml_attributes(Node $node): array
     {
         return [];
     }

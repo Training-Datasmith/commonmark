@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This is part of the league/commonmark package.
  *
@@ -12,52 +11,30 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Table;
 
-namespace League\CommonMark\Extension\Table;
-
-use League\CommonMark\Environment\EnvironmentBuilderInterface;
-use League\CommonMark\Extension\ConfigurableExtensionInterface;
-use League\CommonMark\Renderer\HtmlDecorator;
-use League\Config\ConfigurationBuilderInterface;
+use League\Common_Mark\Environment\Environment_Builder_Interface;
+use League\Common_Mark\Extension\Configurable_Extension_Interface;
+use League\Common_Mark\Renderer\Html_Decorator;
+use League\Config\Configuration_Builder_Interface;
 use Nette\Schema\Expect;
-
-final class TableExtension implements ConfigurableExtensionInterface
+final class Table_Extension implements Configurable_Extension_Interface
 {
-    public function configureSchema(ConfigurationBuilderInterface $builder): void
+    public function configure_schema(Configuration_Builder_Interface $builder): void
     {
-        $attributeArraySchema = Expect::arrayOf(
-            Expect::type('string|string[]|bool'), // attribute value(s)
-            'string' // attribute name
-        )->mergeDefaults(false);
-
-        $builder->addSchema('table', Expect::structure([
-            'wrap' => Expect::structure([
-                'enabled' => Expect::bool()->default(false),
-                'tag' => Expect::string()->default('div'),
-                'attributes' => Expect::arrayOf(Expect::string()),
-            ]),
-            'alignment_attributes' => Expect::structure([
-                'left' => (clone $attributeArraySchema)->default(['align' => 'left']),
-                'center' => (clone $attributeArraySchema)->default(['align' => 'center']),
-                'right' => (clone $attributeArraySchema)->default(['align' => 'right']),
-            ]),
-            'max_autocompleted_cells' => Expect::int()->min(0)->default(TableParser::DEFAULT_MAX_AUTOCOMPLETED_CELLS),
-        ]));
+        $attribute_array_schema = Expect::array_of(
+            Expect::type('string|string[]|bool'),
+            // attribute value(s)
+            'string'
+        )->merge_defaults(false);
+        $builder->add_schema('table', Expect::structure(['wrap' => Expect::structure(['enabled' => Expect::bool()->default(false), 'tag' => Expect::string()->default('div'), 'attributes' => Expect::array_of(Expect::string())]), 'alignment_attributes' => Expect::structure(['left' => (clone $attribute_array_schema)->default(['align' => 'left']), 'center' => (clone $attribute_array_schema)->default(['align' => 'center']), 'right' => (clone $attribute_array_schema)->default(['align' => 'right'])]), 'max_autocompleted_cells' => Expect::int()->min(0)->default(Table_Parser::DEFAULT_MAX_AUTOCOMPLETED_CELLS)]));
     }
-
-    public function register(EnvironmentBuilderInterface $environment): void
+    public function register(Environment_Builder_Interface $environment): void
     {
-        $tableRenderer = new TableRenderer();
-        if ($environment->getConfiguration()->get('table/wrap/enabled')) {
-            $tableRenderer = new HtmlDecorator($tableRenderer, $environment->getConfiguration()->get('table/wrap/tag'), $environment->getConfiguration()->get('table/wrap/attributes'));
+        $table_renderer = new Table_Renderer();
+        if ($environment->get_configuration()->get('table/wrap/enabled')) {
+            $table_renderer = new Html_Decorator($table_renderer, $environment->get_configuration()->get('table/wrap/tag'), $environment->get_configuration()->get('table/wrap/attributes'));
         }
-
-        $environment
-            ->addBlockStartParser(new TableStartParser($environment->getConfiguration()->get('table/max_autocompleted_cells')))
-
-            ->addRenderer(Table::class, $tableRenderer)
-            ->addRenderer(TableSection::class, new TableSectionRenderer())
-            ->addRenderer(TableRow::class, new TableRowRenderer())
-            ->addRenderer(TableCell::class, new TableCellRenderer($environment->getConfiguration()->get('table/alignment_attributes')));
+        $environment->add_block_start_parser(new Table_Start_Parser($environment->get_configuration()->get('table/max_autocompleted_cells')))->add_renderer(Table::class, $table_renderer)->add_renderer(Table_Section::class, new Table_Section_Renderer())->add_renderer(Table_Row::class, new Table_Row_Renderer())->add_renderer(Table_Cell::class, new Table_Cell_Renderer($environment->get_configuration()->get('table/alignment_attributes')));
     }
 }

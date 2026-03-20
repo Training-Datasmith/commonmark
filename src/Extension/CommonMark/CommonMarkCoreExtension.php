@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -13,80 +12,31 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Common_Mark;
 
-namespace League\CommonMark\Extension\CommonMark;
-
-use League\CommonMark\Environment\EnvironmentBuilderInterface;
-use League\CommonMark\Extension\CommonMark\Delimiter\Processor\EmphasisDelimiterProcessor;
-use League\CommonMark\Extension\ConfigurableExtensionInterface;
-use League\CommonMark\Node as CoreNode;
-use League\CommonMark\Parser as CoreParser;
-use League\CommonMark\Renderer as CoreRenderer;
-use League\Config\ConfigurationBuilderInterface;
+use League\Common_Mark\Environment\Environment_Builder_Interface;
+use League\Common_Mark\Extension\Common_Mark\Delimiter\Processor\Emphasis_Delimiter_Processor;
+use League\Common_Mark\Extension\Configurable_Extension_Interface;
+use League\Common_Mark\Node as CoreNode;
+use League\Common_Mark\Parser as CoreParser;
+use League\Common_Mark\Renderer as CoreRenderer;
+use League\Config\Configuration_Builder_Interface;
 use Nette\Schema\Expect;
-
-final class CommonMarkCoreExtension implements ConfigurableExtensionInterface
+final class Common_Mark_Core_Extension implements Configurable_Extension_Interface
 {
-    public function configureSchema(ConfigurationBuilderInterface $builder): void
+    public function configure_schema(Configuration_Builder_Interface $builder): void
     {
-        $builder->addSchema('commonmark', Expect::structure([
-            'use_asterisk' => Expect::bool(true),
-            'use_underscore' => Expect::bool(true),
-            'enable_strong' => Expect::bool(true),
-            'enable_em' => Expect::bool(true),
-            'unordered_list_markers' => Expect::listOf('string')->min(1)->default(['*', '+', '-'])->mergeDefaults(false),
-        ]));
+        $builder->add_schema('commonmark', Expect::structure(['use_asterisk' => Expect::bool(true), 'use_underscore' => Expect::bool(true), 'enable_strong' => Expect::bool(true), 'enable_em' => Expect::bool(true), 'unordered_list_markers' => Expect::list_of('string')->min(1)->default(['*', '+', '-'])->merge_defaults(false)]));
     }
-
     // phpcs:disable Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma,Squiz.WhiteSpace.SemicolonSpacing.Incorrect
-    public function register(EnvironmentBuilderInterface $environment): void
+    public function register(Environment_Builder_Interface $environment): void
     {
-        $environment
-            ->addBlockStartParser(new Parser\Block\BlockQuoteStartParser(), 70)
-            ->addBlockStartParser(new Parser\Block\HeadingStartParser(), 60)
-            ->addBlockStartParser(new Parser\Block\FencedCodeStartParser(), 50)
-            ->addBlockStartParser(new Parser\Block\HtmlBlockStartParser(), 40)
-            ->addBlockStartParser(new Parser\Block\ThematicBreakStartParser(), 20)
-            ->addBlockStartParser(new Parser\Block\ListBlockStartParser(), 10)
-            ->addBlockStartParser(new Parser\Block\IndentedCodeStartParser(), -100)
-
-            ->addInlineParser(new CoreParser\Inline\NewlineParser(), 200)
-            ->addInlineParser(new Parser\Inline\BacktickParser(), 150)
-            ->addInlineParser(new Parser\Inline\EscapableParser(), 80)
-            ->addInlineParser(new Parser\Inline\EntityParser(), 70)
-            ->addInlineParser(new Parser\Inline\AutolinkParser(), 50)
-            ->addInlineParser(new Parser\Inline\HtmlInlineParser(), 40)
-            ->addInlineParser(new Parser\Inline\CloseBracketParser(), 30)
-            ->addInlineParser(new Parser\Inline\OpenBracketParser(), 20)
-            ->addInlineParser(new Parser\Inline\BangParser(), 10)
-
-            ->addRenderer(Node\Block\BlockQuote::class, new Renderer\Block\BlockQuoteRenderer(), 0)
-            ->addRenderer(CoreNode\Block\Document::class, new CoreRenderer\Block\DocumentRenderer(), 0)
-            ->addRenderer(Node\Block\FencedCode::class, new Renderer\Block\FencedCodeRenderer(), 0)
-            ->addRenderer(Node\Block\Heading::class, new Renderer\Block\HeadingRenderer(), 0)
-            ->addRenderer(Node\Block\HtmlBlock::class, new Renderer\Block\HtmlBlockRenderer(), 0)
-            ->addRenderer(Node\Block\IndentedCode::class, new Renderer\Block\IndentedCodeRenderer(), 0)
-            ->addRenderer(Node\Block\ListBlock::class, new Renderer\Block\ListBlockRenderer(), 0)
-            ->addRenderer(Node\Block\ListItem::class, new Renderer\Block\ListItemRenderer(), 0)
-            ->addRenderer(CoreNode\Block\Paragraph::class, new CoreRenderer\Block\ParagraphRenderer(), 0)
-            ->addRenderer(Node\Block\ThematicBreak::class, new Renderer\Block\ThematicBreakRenderer(), 0)
-
-            ->addRenderer(Node\Inline\Code::class, new Renderer\Inline\CodeRenderer(), 0)
-            ->addRenderer(Node\Inline\Emphasis::class, new Renderer\Inline\EmphasisRenderer(), 0)
-            ->addRenderer(Node\Inline\HtmlInline::class, new Renderer\Inline\HtmlInlineRenderer(), 0)
-            ->addRenderer(Node\Inline\Image::class, new Renderer\Inline\ImageRenderer(), 0)
-            ->addRenderer(Node\Inline\Link::class, new Renderer\Inline\LinkRenderer(), 0)
-            ->addRenderer(CoreNode\Inline\Newline::class, new CoreRenderer\Inline\NewlineRenderer(), 0)
-            ->addRenderer(Node\Inline\Strong::class, new Renderer\Inline\StrongRenderer(), 0)
-            ->addRenderer(CoreNode\Inline\Text::class, new CoreRenderer\Inline\TextRenderer(), 0)
-        ;
-
-        if ($environment->getConfiguration()->get('commonmark/use_asterisk')) {
-            $environment->addDelimiterProcessor(new EmphasisDelimiterProcessor('*'));
+        $environment->add_block_start_parser(new Parser\Block\Block_Quote_Start_Parser(), 70)->add_block_start_parser(new Parser\Block\Heading_Start_Parser(), 60)->add_block_start_parser(new Parser\Block\Fenced_Code_Start_Parser(), 50)->add_block_start_parser(new Parser\Block\Html_Block_Start_Parser(), 40)->add_block_start_parser(new Parser\Block\Thematic_Break_Start_Parser(), 20)->add_block_start_parser(new Parser\Block\List_Block_Start_Parser(), 10)->add_block_start_parser(new Parser\Block\Indented_Code_Start_Parser(), -100)->add_inline_parser(new Core_Parser\Inline\Newline_Parser(), 200)->add_inline_parser(new Parser\Inline\Backtick_Parser(), 150)->add_inline_parser(new Parser\Inline\Escapable_Parser(), 80)->add_inline_parser(new Parser\Inline\Entity_Parser(), 70)->add_inline_parser(new Parser\Inline\Autolink_Parser(), 50)->add_inline_parser(new Parser\Inline\Html_Inline_Parser(), 40)->add_inline_parser(new Parser\Inline\Close_Bracket_Parser(), 30)->add_inline_parser(new Parser\Inline\Open_Bracket_Parser(), 20)->add_inline_parser(new Parser\Inline\Bang_Parser(), 10)->add_renderer(Node\Block\Block_Quote::class, new Renderer\Block\Block_Quote_Renderer(), 0)->add_renderer(Core_Node\Block\Document::class, new Core_Renderer\Block\Document_Renderer(), 0)->add_renderer(Node\Block\Fenced_Code::class, new Renderer\Block\Fenced_Code_Renderer(), 0)->add_renderer(Node\Block\Heading::class, new Renderer\Block\Heading_Renderer(), 0)->add_renderer(Node\Block\Html_Block::class, new Renderer\Block\Html_Block_Renderer(), 0)->add_renderer(Node\Block\Indented_Code::class, new Renderer\Block\Indented_Code_Renderer(), 0)->add_renderer(Node\Block\List_Block::class, new Renderer\Block\List_Block_Renderer(), 0)->add_renderer(Node\Block\List_Item::class, new Renderer\Block\List_Item_Renderer(), 0)->add_renderer(Core_Node\Block\Paragraph::class, new Core_Renderer\Block\Paragraph_Renderer(), 0)->add_renderer(Node\Block\Thematic_Break::class, new Renderer\Block\Thematic_Break_Renderer(), 0)->add_renderer(Node\Inline\Code::class, new Renderer\Inline\Code_Renderer(), 0)->add_renderer(Node\Inline\Emphasis::class, new Renderer\Inline\Emphasis_Renderer(), 0)->add_renderer(Node\Inline\Html_Inline::class, new Renderer\Inline\Html_Inline_Renderer(), 0)->add_renderer(Node\Inline\Image::class, new Renderer\Inline\Image_Renderer(), 0)->add_renderer(Node\Inline\Link::class, new Renderer\Inline\Link_Renderer(), 0)->add_renderer(Core_Node\Inline\Newline::class, new Core_Renderer\Inline\Newline_Renderer(), 0)->add_renderer(Node\Inline\Strong::class, new Renderer\Inline\Strong_Renderer(), 0)->add_renderer(Core_Node\Inline\Text::class, new Core_Renderer\Inline\Text_Renderer(), 0);
+        if ($environment->get_configuration()->get('commonmark/use_asterisk')) {
+            $environment->add_delimiter_processor(new Emphasis_Delimiter_Processor('*'));
         }
-
-        if ($environment->getConfiguration()->get('commonmark/use_underscore')) {
-            $environment->addDelimiterProcessor(new EmphasisDelimiterProcessor('_'));
+        if ($environment->get_configuration()->get('commonmark/use_underscore')) {
+            $environment->add_delimiter_processor(new Emphasis_Delimiter_Processor('_'));
         }
     }
 }

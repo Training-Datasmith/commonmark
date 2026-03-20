@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,18 +9,15 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Autolink;
 
-namespace League\CommonMark\Extension\Autolink;
-
-use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
-use League\CommonMark\Parser\Inline\InlineParserInterface;
-use League\CommonMark\Parser\Inline\InlineParserMatch;
-use League\CommonMark\Parser\InlineParserContext;
-
-final class UrlAutolinkParser implements InlineParserInterface
+use League\Common_Mark\Extension\Common_Mark\Node\Inline\Link;
+use League\Common_Mark\Parser\Inline\Inline_Parser_Interface;
+use League\Common_Mark\Parser\Inline\Inline_Parser_Match;
+use League\Common_Mark\Parser\Inline_Parser_Context;
+final class Url_Autolink_Parser implements Inline_Parser_Interface
 {
-    private const ALLOWED_AFTER = [null, ' ', "\t", "\n", "\x0b", "\x0c", "\x0d", '*', '_', '~', '('];
-
+    private const ALLOWED_AFTER = [null, ' ', "\t", "\n", "\v", "\f", "\r", '*', '_', '~', '('];
     // RegEx adapted from https://github.com/symfony/symfony/blob/6.3/src/Symfony/Component/Validator/Constraints/UrlValidator.php
     private const REGEX = '~^
         (
@@ -50,108 +46,86 @@ final class UrlAutolinkParser implements InlineParserInterface
             (?:\? (?:[\pL\pN\-._\~!$&\'\[\]()*+,;=:@/?]|%%[0-9A-Fa-f]{2})* )? # a query (optional)
             (?:\# (?:[\pL\pN\-._\~!$&\'()*+,;=:@/?]|%%[0-9A-Fa-f]{2})* )?     # a fragment (optional)
         )~ixu';
-
     /**
      * @var string[]
      *
      * @psalm-readonly
      */
     private array $prefixes = ['www.'];
-
     /**
      * @psalm-var non-empty-string
      *
      * @psalm-readonly
      */
-    private string $finalRegex;
-
-    private string $defaultProtocol;
-
+    private string $final_regex;
+    private string $default_protocol;
     /**
      * @param array<int, string> $allowedProtocols
      */
-    public function __construct(array $allowedProtocols = ['http', 'https', 'ftp'], string $defaultProtocol = 'http')
+    public function __construct(array $allowed_protocols = ['http', 'https', 'ftp'], string $default_protocol = 'http')
     {
         /**
          * @psalm-suppress PropertyTypeCoercion
          */
-        $this->finalRegex = \sprintf(self::REGEX, \implode('|', $allowedProtocols));
-
-        foreach ($allowedProtocols as $protocol) {
+        $this->final_regex = \sprintf(self::REGEX, \implode('|', $allowed_protocols));
+        foreach ($allowed_protocols as $protocol) {
             $this->prefixes[] = $protocol . '://';
         }
-
-        $this->defaultProtocol = $defaultProtocol;
+        $this->default_protocol = $default_protocol;
     }
-
-    public function getMatchDefinition(): InlineParserMatch
+    public function get_match_definition(): Inline_Parser_Match
     {
-        return InlineParserMatch::oneOf(...$this->prefixes);
+        return Inline_Parser_Match::one_of(...$this->prefixes);
     }
-
-    public function parse(InlineParserContext $inlineContext): bool
+    public function parse(Inline_Parser_Context $inline_context): bool
     {
-        $cursor = $inlineContext->getCursor();
-
+        $cursor = $inline_context->get_cursor();
         // Autolinks can only come at the beginning of a line, after whitespace, or certain delimiting characters
-        $previousChar = $cursor->peek(-1);
-        if (! \in_array($previousChar, self::ALLOWED_AFTER, true)) {
+        $previous_char = $cursor->peek(-1);
+        if (!\in_array($previous_char, self::ALLOWED_AFTER, true)) {
             return false;
         }
-
         // Check if we have a valid URL
-        if (! \preg_match($this->finalRegex, $cursor->getRemainder(), $matches)) {
+        if (!\preg_match($this->final_regex, $cursor->get_remainder(), $matches)) {
             return false;
         }
-
         $url = $matches[0];
-
         // Does the URL end with punctuation that should be stripped?
         if (\preg_match('/(.+?)([?!.,:*_~]+)$/', $url, $matches)) {
             // Add the punctuation later
             $url = $matches[1];
         }
-
         // Does the URL end with something that looks like an entity reference?
         if (\preg_match('/(.+)(&[A-Za-z0-9]+;)$/', $url, $matches)) {
             $url = $matches[1];
         }
-
         // Does the URL need unmatched parens chopped off?
-        if (str_ends_with($url, ')') && ($diff = self::diffParens($url)) > 0) {
+        if (str_ends_with($url, ')') && ($diff = self::diff_parens($url)) > 0) {
             $url = \substr($url, 0, -$diff);
         }
-
-        $cursor->advanceBy(\mb_strlen($url, 'UTF-8'));
-
+        $cursor->advance_by(\mb_strlen($url, 'UTF-8'));
         // Auto-prefix 'http(s)://' onto 'www' URLs
         if (str_starts_with($url, 'www.')) {
-            $inlineContext->getContainer()->appendChild(new Link($this->defaultProtocol . '://' . $url, $url));
-
+            $inline_context->get_container()->append_child(new Link($this->default_protocol . '://' . $url, $url));
             return true;
         }
-
-        $inlineContext->getContainer()->appendChild(new Link($url, $url));
-
+        $inline_context->get_container()->append_child(new Link($url, $url));
         return true;
     }
-
     /**
      * @psalm-pure
      */
-    private static function diffParens(string $content): int
+    private static function diff_parens(string $content): int
     {
         // Scan the entire autolink for the total number of parentheses.
         // If there is a greater number of closing parentheses than opening ones,
         // we don’t consider ANY of the last characters as part of the autolink,
         // in order to facilitate including an autolink inside a parenthesis.
         \preg_match_all('/[()]/', $content, $matches);
-
-        $charCount = ['(' => 0, ')' => 0];
+        $char_count = ['(' => 0, ')' => 0];
         foreach ($matches[0] as $char) {
-            $charCount[$char]++;
+            $char_count[$char]++;
         }
-
-        return $charCount[')'] - $charCount['('];
+        return $char_count[')'] - $char_count['('];
     }
 }

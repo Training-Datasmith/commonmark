@@ -8,28 +8,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace League\Common_Mark\Extension\Front_Matter\Listener;
 
-declare(strict_types=1);
-
-namespace League\CommonMark\Extension\FrontMatter\Listener;
-
-use League\CommonMark\Event\DocumentRenderedEvent;
-use League\CommonMark\Extension\FrontMatter\Output\RenderedContentWithFrontMatter;
-
-final class FrontMatterPostRenderListener
+use League\Common_Mark\Event\Document_Rendered_Event;
+use League\Common_Mark\Extension\Front_Matter\Output\Rendered_Content_With_Front_Matter;
+final class Front_Matter_Post_Render_Listener
 {
-    public function __invoke(DocumentRenderedEvent $event): void
+    public function __invoke(Document_Rendered_Event $event): void
     {
-        if ($event->getOutput()->getDocument()->data->get('front_matter', null) === null) {
+        if ($event->get_output()->get_document()->data->get('front_matter', null) === null) {
             return;
         }
-
-        $frontMatter = $event->getOutput()->getDocument()->data->get('front_matter');
-
-        $event->replaceOutput(new RenderedContentWithFrontMatter(
-            $event->getOutput()->getDocument(),
-            $event->getOutput()->getContent(),
-            $frontMatter
-        ));
+        $front_matter = $event->get_output()->get_document()->data->get('front_matter');
+        $event->replace_output(new Rendered_Content_With_Front_Matter($event->get_output()->get_document(), $event->get_output()->get_content(), $front_matter));
     }
 }

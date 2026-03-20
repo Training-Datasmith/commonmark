@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,16 +9,15 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-namespace League\CommonMark\Extension\Embed;
+namespace League\Common_Mark\Extension\Embed;
 
 /**
  * Interface for a service which updates the embed code(s) for the given array of embeds
  */
-interface EmbedAdapterInterface
+interface Embed_Adapter_Interface
 {
     /**
      * @param Embed[] $embeds
      */
-    public function updateEmbeds(array $embeds): void;
+    public function update_embeds(array $embeds): void;
 }

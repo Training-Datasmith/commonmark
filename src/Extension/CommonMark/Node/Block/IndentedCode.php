@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,22 +9,18 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Common_Mark\Node\Block;
 
-namespace League\CommonMark\Extension\CommonMark\Node\Block;
-
-use League\CommonMark\Node\Block\AbstractBlock;
-use League\CommonMark\Node\StringContainerInterface;
-
-final class IndentedCode extends AbstractBlock implements StringContainerInterface
+use League\Common_Mark\Node\Block\Abstract_Block;
+use League\Common_Mark\Node\String_Container_Interface;
+final class Indented_Code extends Abstract_Block implements String_Container_Interface
 {
     private string $literal = '';
-
-    public function getLiteral(): string
+    public function get_literal(): string
     {
         return $this->literal;
     }
-
-    public function setLiteral(string $literal): void
+    public function set_literal(string $literal): void
     {
         $this->literal = $literal;
     }

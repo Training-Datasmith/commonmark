@@ -9,24 +9,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace League\Common_Mark\Extension\Footnote\Renderer;
 
-declare(strict_types=1);
-
-namespace League\CommonMark\Extension\Footnote\Renderer;
-
-use League\CommonMark\Extension\Footnote\Node\FootnoteContainer;
-use League\CommonMark\Node\Node;
-use League\CommonMark\Renderer\ChildNodeRendererInterface;
-use League\CommonMark\Renderer\NodeRendererInterface;
-use League\CommonMark\Util\HtmlElement;
-use League\CommonMark\Xml\XmlNodeRendererInterface;
-use League\Config\ConfigurationAwareInterface;
-use League\Config\ConfigurationInterface;
-
-final class FootnoteContainerRenderer implements NodeRendererInterface, XmlNodeRendererInterface, ConfigurationAwareInterface
+use League\Common_Mark\Extension\Footnote\Node\Footnote_Container;
+use League\Common_Mark\Node\Node;
+use League\Common_Mark\Renderer\Child_Node_Renderer_Interface;
+use League\Common_Mark\Renderer\Node_Renderer_Interface;
+use League\Common_Mark\Util\Html_Element;
+use League\Common_Mark\Xml\Xml_Node_Renderer_Interface;
+use League\Config\Configuration_Aware_Interface;
+use League\Config\Configuration_Interface;
+final class Footnote_Container_Renderer implements Node_Renderer_Interface, Xml_Node_Renderer_Interface, Configuration_Aware_Interface
 {
-    private ConfigurationInterface $config;
-
+    private Configuration_Interface $config;
     /**
      * @param FootnoteContainer $node
      *
@@ -34,37 +30,30 @@ final class FootnoteContainerRenderer implements NodeRendererInterface, XmlNodeR
      *
      * @psalm-suppress MoreSpecificImplementedParamType
      */
-    public function render(Node $node, ChildNodeRendererInterface $childRenderer): \Stringable
+    public function render(Node $node, Child_Node_Renderer_Interface $child_renderer): \Stringable
     {
-        FootnoteContainer::assertInstanceOf($node);
-
-        $attrs = $node->data->getData('attributes');
-
+        Footnote_Container::assert_instance_of($node);
+        $attrs = $node->data->get_data('attributes');
         $attrs->append('class', $this->config->get('footnote/container_class'));
         $attrs->set('role', 'doc-endnotes');
-
-        $contents = new HtmlElement('ol', [], $childRenderer->renderNodes($node->children()));
+        $contents = new Html_Element('ol', [], $child_renderer->render_nodes($node->children()));
         if ($this->config->get('footnote/container_add_hr')) {
-            $contents = [new HtmlElement('hr', [], null, true), $contents];
+            $contents = [new Html_Element('hr', [], null, true), $contents];
         }
-
-        return new HtmlElement('div', $attrs->export(), $contents);
+        return new Html_Element('div', $attrs->export(), $contents);
     }
-
-    public function setConfiguration(ConfigurationInterface $configuration): void
+    public function set_configuration(Configuration_Interface $configuration): void
     {
         $this->config = $configuration;
     }
-
-    public function getXmlTagName(Node $node): string
+    public function get_xml_tag_name(Node $node): string
     {
         return 'footnote_container';
     }
-
     /**
      * @return array<string, scalar>
      */
-    public function getXmlAttributes(Node $node): array
+    public function get_xml_attributes(Node $node): array
     {
         return [];
     }

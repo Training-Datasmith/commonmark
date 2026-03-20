@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,29 +9,23 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Description_List\Node;
 
-namespace League\CommonMark\Extension\DescriptionList\Node;
-
-use League\CommonMark\Node\Block\AbstractBlock;
-use League\CommonMark\Node\Block\TightBlockInterface;
-
-class Description extends AbstractBlock implements TightBlockInterface
+use League\Common_Mark\Node\Block\Abstract_Block;
+use League\Common_Mark\Node\Block\Tight_Block_Interface;
+class Description extends Abstract_Block implements Tight_Block_Interface
 {
     private bool $tight;
-
     public function __construct(bool $tight = false)
     {
         parent::__construct();
-
         $this->tight = $tight;
     }
-
-    public function isTight(): bool
+    public function is_tight(): bool
     {
         return $this->tight;
     }
-
-    public function setTight(bool $tight): void
+    public function set_tight(bool $tight): void
     {
         $this->tight = $tight;
     }

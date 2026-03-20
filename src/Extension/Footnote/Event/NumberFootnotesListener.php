@@ -9,66 +9,51 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace League\Common_Mark\Extension\Footnote\Event;
 
-declare(strict_types=1);
-
-namespace League\CommonMark\Extension\Footnote\Event;
-
-use League\CommonMark\Event\DocumentParsedEvent;
-use League\CommonMark\Extension\Footnote\Node\FootnoteRef;
-use League\CommonMark\Reference\Reference;
-
-final class NumberFootnotesListener
+use League\Common_Mark\Event\Document_Parsed_Event;
+use League\Common_Mark\Extension\Footnote\Node\Footnote_Ref;
+use League\Common_Mark\Reference\Reference;
+final class Number_Footnotes_Listener
 {
-    public function onDocumentParsed(DocumentParsedEvent $event): void
+    public function on_document_parsed(Document_Parsed_Event $event): void
     {
-        $document     = $event->getDocument();
-        $nextCounter  = 1;
-        $usedLabels   = [];
-        $usedCounters = [];
-
+        $document = $event->get_document();
+        $next_counter = 1;
+        $used_labels = [];
+        $used_counters = [];
         foreach ($document->iterator() as $node) {
-            if (! $node instanceof FootnoteRef) {
+            if (!$node instanceof Footnote_Ref) {
                 continue;
             }
-
-            $existingReference   = $node->getReference();
-            $label               = $existingReference->getLabel();
-            $counter             = $nextCounter;
-            $canIncrementCounter = true;
-
-            if (\array_key_exists($label, $usedLabels)) {
+            $existing_reference = $node->get_reference();
+            $label = $existing_reference->get_label();
+            $counter = $next_counter;
+            $can_increment_counter = true;
+            if (\array_key_exists($label, $used_labels)) {
                 /*
                  * Reference is used again, we need to point
                  * to the same footnote. But with a different ID
                  */
-                $counter             = $usedCounters[$label];
-                $label              .= '__' . ++$usedLabels[$label];
-                $canIncrementCounter = false;
+                $counter = $used_counters[$label];
+                $label .= '__' . ++$used_labels[$label];
+                $can_increment_counter = false;
             }
-
             // rewrite reference title to use a numeric link
-            $newReference = new Reference(
-                $label,
-                $existingReference->getDestination(),
-                (string) $counter
-            );
-
+            $new_reference = new Reference($label, $existing_reference->get_destination(), (string) $counter);
             // Override reference with numeric link
-            $node->setReference($newReference);
-            $document->getReferenceMap()->add($newReference);
-
+            $node->set_reference($new_reference);
+            $document->get_reference_map()->add($new_reference);
             /*
              * Store created references in document for
              * creating FootnoteBackrefs
              */
-            $document->data->append($existingReference->getDestination(), $newReference);
-
-            $usedLabels[$label]   = 1;
-            $usedCounters[$label] = $nextCounter;
-
-            if ($canIncrementCounter) {
-                $nextCounter++;
+            $document->data->append($existing_reference->get_destination(), $new_reference);
+            $used_labels[$label] = 1;
+            $used_counters[$label] = $next_counter;
+            if ($can_increment_counter) {
+                $next_counter++;
             }
         }
     }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,11 +9,9 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Delimiter\Processor;
 
-namespace League\CommonMark\Delimiter\Processor;
-
-use League\CommonMark\Delimiter\DelimiterInterface;
-
+use League\Common_Mark\Delimiter\Delimiter_Interface;
 /**
  * Special marker interface for delimiter processors that return dynamic values from getDelimiterUse()
  *
@@ -22,7 +19,7 @@ use League\CommonMark\Delimiter\DelimiterInterface;
  * cache the lower bound when searching for a matching opener. This gets complicated for delimiter processors
  * that use a dynamic number of characters (like with emphasis and its "multiple of 3" rule).
  */
-interface CacheableDelimiterProcessorInterface extends DelimiterProcessorInterface
+interface Cacheable_Delimiter_Processor_Interface extends Delimiter_Processor_Interface
 {
     /**
      * Returns a cache key of the factors that determine the number of characters to use.
@@ -42,5 +39,5 @@ interface CacheableDelimiterProcessorInterface extends DelimiterProcessorInterfa
      * If getDelimiterUse() always returns the same hard-coded value, this method should return just
      * the delimiter character.
      */
-    public function getCacheKey(DelimiterInterface $closer): string;
+    public function get_cache_key(Delimiter_Interface $closer): string;
 }

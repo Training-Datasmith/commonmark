@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of the league/commonmark package.
  *
@@ -10,38 +9,31 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace League\Common_Mark\Extension\Front_Matter\Data;
 
-namespace League\CommonMark\Extension\FrontMatter\Data;
-
-use League\CommonMark\Exception\MissingDependencyException;
-use League\CommonMark\Extension\FrontMatter\Exception\InvalidFrontMatterException;
-
-final class LibYamlFrontMatterParser implements FrontMatterDataParserInterface
+use League\Common_Mark\Exception\Missing_Dependency_Exception;
+use League\Common_Mark\Extension\Front_Matter\Exception\Invalid_Front_Matter_Exception;
+final class Lib_Yaml_Front_Matter_Parser implements Front_Matter_Data_Parser_Interface
 {
-    public static function capable(): ?LibYamlFrontMatterParser
+    public static function capable(): ?Lib_Yaml_Front_Matter_Parser
     {
-        if (! \extension_loaded('yaml')) {
+        if (!\extension_loaded('yaml')) {
             return null;
         }
-
-        return new LibYamlFrontMatterParser();
+        return new Lib_Yaml_Front_Matter_Parser();
     }
-
     /**
      * {@inheritDoc}
      */
-    public function parse(string $frontMatter)
+    public function parse(string $front_matter)
     {
-        if (! \extension_loaded('yaml')) {
-            throw new MissingDependencyException('Failed to parse yaml: "ext-yaml" extension is missing');
+        if (!\extension_loaded('yaml')) {
+            throw new Missing_Dependency_Exception('Failed to parse yaml: "ext-yaml" extension is missing');
         }
-
-        $result = @\yaml_parse($frontMatter);
-
+        $result = @\yaml_parse($front_matter);
         if ($result === false) {
-            throw new InvalidFrontMatterException('Failed to parse front matter');
+            throw new Invalid_Front_Matter_Exception('Failed to parse front matter');
         }
-
         return $result;
     }
 }
